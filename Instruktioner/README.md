@@ -2,7 +2,9 @@
 
 Detta är min repository för LEXICON läxor.
 
-Instruktioner för varje uppgift kan hittas [här](https://github.com/Ertingel/LEXICON-Vite/tree/main/Instruktioner).
+Varje uppgift har en länk till en respektive fil.
+
+Färdiga uppgifter kan hittas [här](https://github.com/Ertingel/LEXICON-Vite).
 
 ---
 
