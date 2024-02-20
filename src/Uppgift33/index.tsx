@@ -1,6 +1,6 @@
 //
 import Section from "./section.tsx"
-import "./uppgift33.css"
+import "./index.css"
 
 function Uppgift33() {
 	const content = [
@@ -42,14 +42,16 @@ function Uppgift33() {
 			<header>
 				<nav>
 					{content.map(({ title }) => (
-						<a href={`#${title}`}>{title}</a>
+						<a key={title} href={`#${title.toLowerCase()}`}>
+							{title}
+						</a>
 					))}
 				</nav>
 			</header>
 
 			<main>
 				{content.map(sectionData => (
-					<Section {...sectionData} />
+					<Section key={sectionData.title} {...sectionData} />
 				))}
 			</main>
 		</article>

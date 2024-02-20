@@ -1,4 +1,4 @@
-//import "./Uppgift33/section.css"
+import "./section.css"
 
 function Section({
 	title,
@@ -12,7 +12,12 @@ function Section({
 	table: Array<Array<string>>
 }) {
 	return (
-		<section id={title}>
+		<section
+			id={title.toLowerCase()}
+			style={{
+				backgroundImage: `url("src/Uppgift33/assets/${title.toLowerCase()}.jpg")`,
+			}}
+		>
 			<h1>{title}</h1>
 			<p>{p1}</p>
 			<p>{p2}</p>
@@ -20,9 +25,9 @@ function Section({
 			<table>
 				<tbody>
 					{table.map((row: Array<string>) => (
-						<tr>
+						<tr key={row.join("|")}>
 							<th>{row[0]}</th>
-							<th>{row[0]}</th>
+							<th>{row[1]}</th>
 						</tr>
 					))}
 				</tbody>

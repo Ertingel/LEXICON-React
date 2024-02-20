@@ -12,7 +12,7 @@
 }
 
 #uppgift33 section:not(:last-child) {
-	border-bottom: solid 0.5rem #8d0100;
+	margin-bottom: 0.5rem;
 }
 
 #uppgift33 section > * {
