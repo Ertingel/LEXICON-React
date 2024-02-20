@@ -1,0 +1,52 @@
+.uppgift33 section {
+	height: 100vh;
+
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: cover;
+
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}
+
+.uppgift33 section:not(:first-child) {
+	margin-top: 0.5rem;
+}
+
+.uppgift33 section > * {
+	width: 18rem;
+	padding: 0.5rem 1rem;
+	margin: 0.75rem 0;
+}
+
+.uppgift33 section > h1 {
+	padding: 0;
+	font-size: 5rem;
+
+	text-align: center;
+	color: #8d0100;
+}
+
+.uppgift33 section > p {
+	position: relative;
+
+	text-align: center;
+	background-color: #8d0100cc;
+}
+
+.uppgift33 section > p:nth-child(3) {
+	display: none;
+}
+
+.uppgift33 section > table {
+	background-color: #000a;
+}
+
+.uppgift33 section > table > tbody > tr {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	justify-content: space-between;
+}
