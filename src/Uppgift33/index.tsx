@@ -1,5 +1,6 @@
-import "./uppgift33.css"
+//
 import Section from "./section.tsx"
+import "./uppgift33.css"
 
 function Uppgift33() {
 	const content = [

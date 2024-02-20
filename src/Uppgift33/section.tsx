@@ -1,4 +1,4 @@
-import "./section.css"
+//import "./Uppgift33/section.css"
 
 function Section({
 	title,
