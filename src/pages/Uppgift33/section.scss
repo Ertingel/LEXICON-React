@@ -1,0 +1,78 @@
+#uppgift33 section {
+	width: 100vw;
+	height: 100vh;
+
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: cover;
+
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+
+	&:not(:last-child) {
+		margin-bottom: 0.5em;
+	}
+
+	& > * {
+		width: 18em;
+		padding: 0.5em 1em;
+		margin: 0.75em auto;
+	}
+
+	& > h1 {
+		width: auto !important;
+		padding: 0;
+		margin: 0.15em auto;
+		font-size: 5em;
+
+		text-align: center;
+		color: #8d0100;
+	}
+
+	& > p {
+		position: relative;
+
+		text-align: center;
+		background-color: #8d0100cc;
+
+		&:nth-child(3) {
+			display: none;
+		}
+	}
+
+	& > table {
+		background-color: #000a;
+
+		& > tbody > tr {
+			display: flex;
+			flex-direction: row;
+			justify-content: center;
+			justify-content: space-between;
+		}
+	}
+}
+
+@media screen and (min-width: 125vmin) {
+	#uppgift33 section {
+		& > * {
+			width: 25em;
+		}
+
+		& > p {
+			&:nth-child(2) {
+				right: 3em;
+			}
+
+			&:nth-child(3) {
+				display: block;
+				left: 3em;
+			}
+		}
+
+		& > table {
+			padding-inline: 3em;
+		}
+	}
+}

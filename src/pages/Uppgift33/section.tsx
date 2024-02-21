@@ -1,4 +1,4 @@
-import "./section.css"
+import "./section.scss"
 
 function Section({
 	title,
