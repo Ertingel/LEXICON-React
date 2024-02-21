@@ -1,4 +1,3 @@
-//
 import Section from "./section.tsx"
 import "./index.scss"
 
