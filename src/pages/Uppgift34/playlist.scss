@@ -16,7 +16,7 @@
 	}
 
 	&::-webkit-scrollbar {
-		width: 0.25rem;
+		width: 0.25em;
 	}
 
 	&::-webkit-scrollbar-thumb {
@@ -32,7 +32,7 @@
 		padding: 0;
 
 		& > li:not(:last-child) {
-			border-bottom: #122339 solid 0.2rem;
+			border-bottom: #122339 solid 0.2em;
 		}
 
 		& > li::marker {
@@ -41,9 +41,9 @@
 
 		& > li > button {
 			width: 100%;
-			height: 6rem;
-			max-height: 6rem;
-			padding: 1rem 1.5rem;
+			height: 6em;
+			max-height: 6em;
+			padding: 1em 1.5em;
 
 			color: #fefefe;
 			background-color: #17263e;
@@ -64,23 +64,23 @@
 
 		& > li > button > img {
 			height: 100%;
-			border-radius: 0.25rem;
-			box-shadow: 0 0 0.5rem #000c;
+			border-radius: 0.25em;
+			box-shadow: 0 0 0.5em #000c;
 
 			pointer-events: none;
 		}
 
 		& > li > button > p {
-			font-size: 0.8rem;
+			font-size: 0.8em;
 			flex-grow: 1;
 
-			margin: 0 0.5rem;
+			margin: 0 0.5em;
 
 			text-align: left;
 		}
 	}
 
-	@media screen and (max-width: 41rem) {
+	@media screen and (max-width: 41em) {
 		& {
 			overflow-y: none;
 		}
