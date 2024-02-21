@@ -1,12 +1,11 @@
 @import url("https://fonts.googleapis.com/css2?family=Poiret+One&family=Spirax&display=swap");
 
-html {
-	font-size: 4.5vmin;
-}
-
 #uppgift33 {
+	font-size: 4.5vmin;
+
 	margin: 0;
-	height: 100%;
+	width: 100vw;
+	height: 100vh;
 
 	background-color: #8d0100;
 
@@ -15,6 +14,7 @@ html {
 }
 
 #uppgift33 * {
+	font-size: 1em;
 	box-sizing: border-box;
 
 	font-family: "Poiret One", sans-serif;
@@ -50,9 +50,9 @@ html {
 }
 
 #uppgift33 nav > * {
-	margin: 0.75rem 1rem;
+	margin: 0.75em 1em;
 
-	font-size: 2rem;
+	font-size: 2em;
 	font-family: "Spirax", sans-serif;
 }
 
@@ -61,12 +61,12 @@ html {
 }
 
 @media screen and (min-width: 125vmin) {
-	html {
+	#uppgift33 {
 		font-size: 3vmin;
 	}
 
 	#uppgift33 nav > * {
-		margin: 0.75rem 1.75rem;
-		font-size: 1.5rem;
+		margin: 0.75em 1.75em;
+		font-size: 1.5em;
 	}
 }

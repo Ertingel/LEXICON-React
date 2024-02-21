@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom"
-import ViteDefault from "./ViteDefault/App.tsx"
-import Uppgift33 from "./Uppgift33/index.tsx"
+import ViteDefault from "./pages/ViteDefault/App.tsx"
+import Uppgift33 from "./pages/Uppgift33/index.tsx"
 import "./App.css"
 
 function App() {
