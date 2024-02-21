@@ -1,0 +1,88 @@
+#uppgift34 .playlist {
+	grid-area: aside;
+
+	display: flex;
+	flex-flow: column nowrap;
+	justify-content: flex-start;
+
+	overflow-y: scroll;
+	scrollbar-color: #fefefe #17263e;
+	scrollbar-width: thin;
+
+	&::after {
+		content: "";
+		background-color: #17263eaa;
+		flex-grow: 1;
+	}
+
+	&::-webkit-scrollbar {
+		width: 0.25rem;
+	}
+
+	&::-webkit-scrollbar-thumb {
+		background: #fefefe;
+	}
+
+	&::-webkit-scrollbar-track {
+		background: #17263e;
+	}
+
+	& > ol {
+		margin: 0;
+		padding: 0;
+
+		& > li:not(:last-child) {
+			border-bottom: #122339 solid 0.2rem;
+		}
+
+		& > li::marker {
+			display: none;
+		}
+
+		& > li > button {
+			width: 100%;
+			height: 6rem;
+			max-height: 6rem;
+			padding: 1rem 1.5rem;
+
+			color: #fefefe;
+			background-color: #17263e;
+
+			display: flex;
+			flex-flow: row nowrap;
+			justify-content: space-between;
+			align-items: center;
+		}
+
+		& > li.playing > button {
+			background-color: #17263eaa;
+		}
+
+		& > li.playing > button *.material-icons {
+			color: #fefefe !important;
+		}
+
+		& > li > button > img {
+			height: 100%;
+			border-radius: 0.25rem;
+			box-shadow: 0 0 0.5rem #000c;
+
+			pointer-events: none;
+		}
+
+		& > li > button > p {
+			font-size: 0.8rem;
+			flex-grow: 1;
+
+			margin: 0 0.5rem;
+
+			text-align: left;
+		}
+	}
+
+	@media screen and (max-width: 41rem) {
+		& {
+			overflow-y: none;
+		}
+	}
+}

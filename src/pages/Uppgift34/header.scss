@@ -1,0 +1,11 @@
+#uppgift34 .header {
+	grid-area: header;
+
+	padding: 0.5rem 1rem;
+
+	background-color: #17263ebb;
+
+	display: flex;
+	flex-flow: row nowrap;
+	justify-content: space-between;
+}
