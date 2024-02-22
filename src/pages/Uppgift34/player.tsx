@@ -1,4 +1,4 @@
-import { useState, useRef } from "react"
+import { useState, useEffect, useRef } from "react"
 import { songs } from "./songs"
 import "./player.scss"
 
@@ -11,7 +11,26 @@ function timeToStr(time: number) {
 function Player({ songID }: { songID: number }) {
 	const playing = songs[songID]
 
+	const audioRef = useRef<HTMLAudioElement>(null)
 	const [songLength, setSongLength] = useState(0)
+	const [playProgress, setPlayProgress] = useState(0)
+
+	const playProgressRef = useRef<HTMLInputElement>(null)
+	useEffect(() => {
+		if (playProgressRef.current)
+			playProgressRef.current.style.setProperty(
+				"--progress",
+				`${(playProgress / songLength) * 100}%`
+			)
+	}, [songLength, playProgress])
+
+	const [isPlaying, setIsPlaying] = useState(false)
+	useEffect(() => {
+		if (audioRef.current) {
+			if (isPlaying) audioRef.current.play()
+			else audioRef.current.pause()
+		}
+	}, [isPlaying])
 
 	return (
 		<main className="player">
@@ -32,13 +51,18 @@ function Player({ songID }: { songID: number }) {
 				favorite
 			</button>
 
-			<p id="play-time">{timeToStr(0)}</p>
+			<p id="play-time">{timeToStr(playProgress)}</p>
 			<input
+				ref={playProgressRef}
 				id="play-progress"
 				type="range"
-				defaultValue="0"
+				value={playProgress}
 				min="0"
 				max={songLength}
+				onChange={e => {
+					if (audioRef.current)
+						audioRef.current.currentTime = +e.target.value
+				}}
 			/>
 			<p id="length">{timeToStr(songLength)}</p>
 
@@ -52,8 +76,11 @@ function Player({ songID }: { songID: number }) {
 			<button
 				id="play-pause"
 				className="material-icons active play-circle"
+				onClick={() => {
+					setIsPlaying(!isPlaying)
+				}}
 			>
-				play_circle
+				{isPlaying ? "pause_circle" : "play_circle"}
 			</button>
 			<button id="forward" className="material-icons active fast-forward">
 				fast_forward
@@ -64,12 +91,18 @@ function Player({ songID }: { songID: number }) {
 			</button>
 
 			<audio
+				ref={audioRef}
 				id="audio"
 				src={`./src/pages/Uppgift34/media/${playing.audio_file}`}
-				onLoadedMetadata={e => {
-					// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-					// @ts-ignore
-					if (e.target.duration) setSongLength(e.target.duration)
+				onLoadedMetadata={() => {
+					if (audioRef.current) {
+						setSongLength(audioRef.current.duration)
+						setIsPlaying(!audioRef.current.paused)
+					}
+				}}
+				onTimeUpdate={() => {
+					if (audioRef.current)
+						setPlayProgress(audioRef.current.currentTime)
 				}}
 			></audio>
 		</main>
