@@ -65,5 +65,7 @@ const playlists: Record<number, Playlist> = {
 	},
 }
 
+const favorites = new Set<number>([1, 2])
+
 export type { Song, Playlist }
-export { songs, playlists }
+export { songs, playlists, favorites }

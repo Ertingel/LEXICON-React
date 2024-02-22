@@ -1,20 +1,45 @@
-import { songs, playlists } from "./songs"
 import { useState, useEffect, useRef } from "react"
+import { songs, playlists } from "./songs"
+
 import Header from "./header.tsx"
 import Playlist from "./playlist.tsx"
 import Player from "./player.tsx"
 import "./index.scss"
 
+function shuffleArray<T>(array: Array<T>): Array<T> {
+	const array2 = [...array]
+
+	let currentIndex = array2.length,
+		randomIndex
+
+	while (currentIndex > 0) {
+		randomIndex = Math.floor(Math.random() * currentIndex)
+		currentIndex--
+		;[array2[currentIndex], array2[randomIndex]] = [
+			array2[randomIndex],
+			array2[currentIndex],
+		]
+	}
+
+	return array2
+}
+
 function Uppgift34() {
 	const [playlistID] = useState(0)
-	const [isPlaying, setIsPlaying] = useState(false)
 	const [songIndex, setSongIndex] = useState(0)
+	const [isPlaying, setIsPlaying] = useState(false)
+
+	const [shuffledList, setShuffledList] = useState<number[] | null>(null)
 
 	const [playlistLength, setPlaylistLength] = useState(0)
 	const [songID, setSongID] = useState(0)
 
 	const background2Ref = useRef<HTMLDivElement>(null)
 	const background1Ref = useRef<HTMLDivElement>(null)
+
+	const shuffleList = () => {
+		setShuffledList(shuffleArray(playlists[playlistID].songs))
+	}
 
 	useEffect(() => {
 		setPlaylistLength(playlists[playlistID].songs.length)

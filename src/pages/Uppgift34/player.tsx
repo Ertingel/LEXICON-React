@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react"
-import { songs } from "./songs"
+import { songs, favorites } from "./songs"
+
 import "./player.scss"
 
 function timeToStr(time: number) {
@@ -61,7 +62,22 @@ function Player({
 				<br />
 				<small>{playing.song}</small>
 			</p>
-			<button id="favorite" className="material-icons">
+			<button
+				id="favorite"
+				className={`material-icons ${
+					favorites.has(songID) ? "active" : ""
+				}`}
+				onClick={e => {
+					if (e.target instanceof HTMLElement)
+						if (favorites.has(songID)) {
+							e.target.classList.remove("active")
+							favorites.delete(songID)
+						} else {
+							e.target.classList.add("active")
+							favorites.add(songID)
+						}
+				}}
+			>
 				favorite
 			</button>
 
