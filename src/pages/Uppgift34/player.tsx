@@ -1,8 +1,17 @@
+import { useState, useRef } from "react"
 import { songs } from "./songs"
 import "./player.scss"
 
-function Player() {
-	const playing = songs[0]
+function timeToStr(time: number) {
+	return `${Math.floor((time / 60) % 60)}:${String(
+		Math.floor(time % 60)
+	).padStart(2, "0")}`
+}
+
+function Player({ songID }: { songID: number }) {
+	const playing = songs[songID]
+
+	const [songLength, setSongLength] = useState(0)
 
 	return (
 		<main className="player">
@@ -23,15 +32,15 @@ function Player() {
 				favorite
 			</button>
 
-			<p id="play-time">0:00</p>
+			<p id="play-time">{timeToStr(0)}</p>
 			<input
 				id="play-progress"
 				type="range"
 				defaultValue="0"
 				min="0"
-				max="0"
+				max={songLength}
 			/>
-			<p id="length">0:00</p>
+			<p id="length">{timeToStr(songLength)}</p>
 
 			<button id="repeat" className="material-icons">
 				repeat
@@ -57,6 +66,11 @@ function Player() {
 			<audio
 				id="audio"
 				src={`./src/pages/Uppgift34/media/${playing.audio_file}`}
+				onLoadedMetadata={e => {
+					// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+					// @ts-ignore
+					if (e.target.duration) setSongLength(e.target.duration)
+				}}
 			></audio>
 		</main>
 	)

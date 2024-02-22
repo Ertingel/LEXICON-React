@@ -1,18 +1,30 @@
 import { songs, playlists } from "./songs"
 import "./playlist.scss"
 
-function Playlist() {
-	const curentPlaylist = playlists[0]
+function Playlist({
+	playlistID,
+	songID,
+	onSelect,
+}: {
+	playlistID: number
+	songID: number
+	onSelect: (id: number) => void
+}) {
+	const curentPlaylist = playlists[playlistID]
 
 	return (
 		<aside className="playlist">
 			<ol id="playlist">
-				{curentPlaylist.songs.map(songID => {
-					const song = songs[songID]
+				{curentPlaylist.songs.map(id => {
+					const song = songs[id]
 
 					return (
-						<li key={songID}>
-							<button>
+						<li key={id} className={songID === id ? "playing" : ""}>
+							<button
+								onClick={() => {
+									onSelect(id)
+								}}
+							>
 								<img
 									src={`./src/pages/Uppgift34/media/${song.cover_file}`}
 								/>
