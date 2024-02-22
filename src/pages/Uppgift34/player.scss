@@ -12,11 +12,9 @@
 
 	grid:
 		"album-cover album-cover album-cover album-cover album-cover" auto
-		"add title title title favorite" auto
-		". . . . ." 1fr
-		"play-time play-progress play-progress play-progress length" auto
-		". . . . ." 1fr
-		"repeat rewind play-pause forward shuffle" auto
+		"add title title title favorite" 1fr
+		"play-time play-progress play-progress play-progress length" 1fr
+		"repeat rewind play-pause forward shuffle" 1fr
 		/ 3em 1fr auto 1fr 3em;
 
 	$areas: album-cover, add, title, favorite, play-time, play-progress, length,
@@ -74,11 +72,11 @@
 		width: 100%;
 
 		--progress: 0%;
-	}
 
-	/* emoves default focus */
-	input[type="range"]:focus {
-		outline: none;
+		/* emoves default focus */
+		&:focus {
+			outline: none;
+		}
 	}
 
 	/******** Chrome, Safari, Opera and Edge Chromium styles ********/

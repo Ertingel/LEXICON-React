@@ -17,8 +17,8 @@ function Player({
 }: {
 	songID: number
 	isPlaying: boolean
-	onPrevius: (shuffle: boolean) => void
-	onNext: (shuffle: boolean) => void
+	onPrevius: (repeat: boolean, shuffle: boolean) => void
+	onNext: (repeat: boolean, shuffle: boolean) => void
 	onPlayPause: (isPlaying: boolean) => void
 }) {
 	const playing = songs[songID]
@@ -94,7 +94,7 @@ function Player({
 				id="rewind"
 				className="material-icons active fast-rewind"
 				onClick={() => {
-					if (playProgress < 1) onPrevius(shuffle)
+					if (playProgress < 1) onPrevius(repeat, shuffle)
 					else if (audioRef.current) audioRef.current.currentTime = 0
 				}}
 			>
@@ -113,7 +113,7 @@ function Player({
 				id="forward"
 				className="material-icons active fast-forward"
 				onClick={() => {
-					onNext(shuffle)
+					onNext(repeat, shuffle)
 				}}
 			>
 				fast_forward
@@ -143,7 +143,7 @@ function Player({
 						setPlayProgress(audioRef.current.currentTime)
 				}}
 				onEnded={() => {
-					onNext(shuffle)
+					onNext(repeat, shuffle)
 				}}
 			></audio>
 		</main>
