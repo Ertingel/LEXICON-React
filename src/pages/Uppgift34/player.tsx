@@ -1,17 +1,23 @@
+import { songs } from "./songs"
 import "./player.scss"
 
 function Player() {
+	const playing = songs[0]
+
 	return (
 		<main className="player">
-			<img id="album-cover" src="./src/pages/Uppgift34/placeholder.png" />
+			<img
+				id="album-cover"
+				src={`./src/pages/Uppgift34/media/${playing.cover_file}`}
+			/>
 
 			<button id="add" className="material-icons active">
 				add_circle_outline
 			</button>
 			<p id="title">
-				Artist Name
+				{playing.artist}
 				<br />
-				<small>Song Title</small>
+				<small>{playing.song}</small>
 			</p>
 			<button id="favorite" className="material-icons">
 				favorite
@@ -30,31 +36,28 @@ function Player() {
 			<button id="repeat" className="material-icons">
 				repeat
 			</button>
-			<div id="center-div">
-				<button
-					id="rewind"
-					className="material-icons active fast-rewind"
-				>
-					fast_rewind
-				</button>
-				<button
-					id="play-pause"
-					className="material-icons active play-circle"
-				>
-					play_circle
-				</button>
-				<button
-					id="forward"
-					className="material-icons active fast-forward"
-				>
-					fast_forward
-				</button>
-			</div>
+
+			<button id="rewind" className="material-icons active fast-rewind">
+				fast_rewind
+			</button>
+			<button
+				id="play-pause"
+				className="material-icons active play-circle"
+			>
+				play_circle
+			</button>
+			<button id="forward" className="material-icons active fast-forward">
+				fast_forward
+			</button>
+
 			<button id="shuffle" className="material-icons">
 				shuffle
 			</button>
 
-			<audio id="audio" src=""></audio>
+			<audio
+				id="audio"
+				src={`./src/pages/Uppgift34/media/${playing.audio_file}`}
+			></audio>
 		</main>
 	)
 }
