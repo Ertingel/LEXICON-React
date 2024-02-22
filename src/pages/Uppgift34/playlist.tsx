@@ -4,25 +4,27 @@ import "./playlist.scss"
 function Playlist({
 	playlistID,
 	songID,
+	isPlaying,
 	onSelect,
 }: {
 	playlistID: number
 	songID: number
-	onSelect: (id: number) => void
+	isPlaying: boolean
+	onSelect: (index: number) => void
 }) {
 	const curentPlaylist = playlists[playlistID]
 
 	return (
 		<aside className="playlist">
 			<ol id="playlist">
-				{curentPlaylist.songs.map(id => {
+				{curentPlaylist.songs.map((id, index) => {
 					const song = songs[id]
 
 					return (
 						<li key={id} className={songID === id ? "playing" : ""}>
 							<button
 								onClick={() => {
-									onSelect(id)
+									onSelect(index)
 								}}
 							>
 								<img
@@ -31,10 +33,12 @@ function Playlist({
 								<p>
 									{song.artist}
 									<br />
-									<small>{song.song}</small>`
+									<small>{song.song}</small>
 								</p>
 								<div className="material-icons">
-									play_circle
+									{isPlaying && songID === id
+										? "pause_circle"
+										: "play_circle"}
 								</div>
 							</button>
 						</li>

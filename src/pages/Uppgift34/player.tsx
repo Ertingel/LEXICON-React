@@ -8,7 +8,19 @@ function timeToStr(time: number) {
 	).padStart(2, "0")}`
 }
 
-function Player({ songID }: { songID: number }) {
+function Player({
+	songID,
+	isPlaying,
+	onPrevius,
+	onNext,
+	onPlayPause,
+}: {
+	songID: number
+	isPlaying: boolean
+	onPrevius: (shuffle: boolean) => void
+	onNext: (shuffle: boolean) => void
+	onPlayPause: (isPlaying: boolean) => void
+}) {
 	const playing = songs[songID]
 
 	const audioRef = useRef<HTMLAudioElement>(null)
@@ -24,13 +36,15 @@ function Player({ songID }: { songID: number }) {
 			)
 	}, [songLength, playProgress])
 
-	const [isPlaying, setIsPlaying] = useState(false)
 	useEffect(() => {
 		if (audioRef.current) {
 			if (isPlaying) audioRef.current.play()
 			else audioRef.current.pause()
 		}
-	}, [isPlaying])
+	})
+
+	const [repeat, setRepeat] = useState(false)
+	const [shuffle, setShuffle] = useState(false)
 
 	return (
 		<main className="player">
@@ -66,27 +80,52 @@ function Player({ songID }: { songID: number }) {
 			/>
 			<p id="length">{timeToStr(songLength)}</p>
 
-			<button id="repeat" className="material-icons">
+			<button
+				id="repeat"
+				className={`material-icons ${repeat ? "active" : ""}`}
+				onClick={() => {
+					setRepeat(!repeat)
+				}}
+			>
 				repeat
 			</button>
 
-			<button id="rewind" className="material-icons active fast-rewind">
+			<button
+				id="rewind"
+				className="material-icons active fast-rewind"
+				onClick={() => {
+					if (playProgress < 1) onPrevius(shuffle)
+					else if (audioRef.current) audioRef.current.currentTime = 0
+				}}
+			>
 				fast_rewind
 			</button>
 			<button
 				id="play-pause"
 				className="material-icons active play-circle"
 				onClick={() => {
-					setIsPlaying(!isPlaying)
+					onPlayPause(!isPlaying)
 				}}
 			>
 				{isPlaying ? "pause_circle" : "play_circle"}
 			</button>
-			<button id="forward" className="material-icons active fast-forward">
+			<button
+				id="forward"
+				className="material-icons active fast-forward"
+				onClick={() => {
+					onNext(shuffle)
+				}}
+			>
 				fast_forward
 			</button>
 
-			<button id="shuffle" className="material-icons">
+			<button
+				id="shuffle"
+				className={`material-icons ${shuffle ? "active" : ""}`}
+				onClick={() => {
+					setShuffle(!shuffle)
+				}}
+			>
 				shuffle
 			</button>
 
@@ -97,12 +136,14 @@ function Player({ songID }: { songID: number }) {
 				onLoadedMetadata={() => {
 					if (audioRef.current) {
 						setSongLength(audioRef.current.duration)
-						setIsPlaying(!audioRef.current.paused)
 					}
 				}}
 				onTimeUpdate={() => {
 					if (audioRef.current)
 						setPlayProgress(audioRef.current.currentTime)
+				}}
+				onEnded={() => {
+					onNext(shuffle)
 				}}
 			></audio>
 		</main>
