@@ -1,6 +1,6 @@
-# LEXICON-Vite
+# LEXICON-Vite Instructioner
 
-Detta är min repository för LEXICON läxor.
+Detta är min repository för LEXICON läxor inom React.
 
 Varje uppgift har en länk till en respektive fil.
 

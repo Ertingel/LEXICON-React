@@ -1,6 +1,6 @@
 # LEXICON-React
 
-Detta är min repository för LEXICON läxor.
+Detta är min repository för LEXICON läxor inom React.
 
 Instruktioner för varje uppgift kan hittas [här](https://github.com/Ertingel/LEXICON-React/tree/main/Instruktioner).
 
