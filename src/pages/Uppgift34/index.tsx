@@ -38,7 +38,8 @@ function Uppgift34() {
 	const background1Ref = useRef<HTMLDivElement>(null)
 
 	const shuffleList = () => {
-		setShuffledList(shuffleArray(playlists[playlistID].songs))
+		setShuffledList(shuffleArray([...Array(playlistLength).keys()]))
+		setSongIndex(0)
 	}
 
 	useEffect(() => {
