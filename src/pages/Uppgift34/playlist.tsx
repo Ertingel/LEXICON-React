@@ -28,7 +28,7 @@ function Playlist({
 								}}
 							>
 								<img
-									src={`./src/pages/Uppgift34/media/${song.cover_file}`}
+									src={`/LEXICON-React/Uppgift34/${song.cover_file}`}
 								/>
 								<p>
 									{song.artist}

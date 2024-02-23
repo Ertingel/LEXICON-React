@@ -61,7 +61,7 @@ function Uppgift34() {
 
 			background1Ref.current.style.setProperty(
 				"background-image",
-				`url("./src/pages/Uppgift34/media/${songs[songID].cover_file}")`
+				`url("/LEXICON-React/Uppgift34/${songs[songID].cover_file}")`
 			)
 
 			background1Ref.current.animate(

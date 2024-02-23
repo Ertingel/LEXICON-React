@@ -51,7 +51,7 @@ function Player({
 		<main className="player">
 			<img
 				id="album-cover"
-				src={`./src/pages/Uppgift34/media/${playing.cover_file}`}
+				src={`/LEXICON-React/Uppgift34/${playing.cover_file}`}
 			/>
 
 			<button id="add" className="material-icons active">
@@ -148,7 +148,7 @@ function Player({
 			<audio
 				ref={audioRef}
 				id="audio"
-				src={`./src/pages/Uppgift34/media/${playing.audio_file}`}
+				src={`/LEXICON-React/Uppgift34/${playing.audio_file}`}
 				onLoadedMetadata={() => {
 					if (audioRef.current) {
 						setSongLength(audioRef.current.duration)
