@@ -15,7 +15,7 @@ function Section({
 		<section
 			id={title.toLowerCase()}
 			style={{
-				backgroundImage: `url("https://${title.toLowerCase()}.dev")`,
+				backgroundImage: `url("/LEXICON-React/assets/${title.toLowerCase()}.jpg")`,
 			}}
 		>
 			<h1>{title}</h1>
