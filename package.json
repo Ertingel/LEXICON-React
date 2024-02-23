@@ -1,5 +1,6 @@
 {
-	"name": "lexicon-vite",
+	"name": "lexicon-react",
+	"homepage": "https://ertingel.github.io/LEXICON-React/#",
 	"private": true,
 	"version": "0.0.0",
 	"type": "module",
