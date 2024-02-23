@@ -1,6 +1,9 @@
 import { useState, useEffect, useRef } from "react"
 import { songs, favorites } from "./songs"
-
+/*
+import { useState, useEffect, useRef, useReducer } from "react"
+import { songs, playlists, favorites, IPlaylist, ISong } from "./songs"
+*/
 import "./player.scss"
 
 function timeToStr(time: number) {
@@ -8,7 +11,101 @@ function timeToStr(time: number) {
 		Math.floor(time % 60)
 	).padStart(2, "0")}`
 }
+/*
+enum IPlayerEnum {
+	PREVIOUS = "PREVIOUS",
+	NEXT = "NEXT",
+	SONG_INDEX = "SONG_INDEX",
+	TOGGLE_REPEAT = "TOGGLE_REPEAT",
+	TOGGLE_SHUFFLE = "TOGGLE_SHUFFLE",
+	REPEAT = "REPEAT",
+	SHUFFLE = "SHUFFLE",
+	PLAYLIST_ID = "PLAYLIST_ID",
+}
+interface IPlayerAction {
+	type: IPlayerEnum
+	id: number | never
+	index: number | never
+	state: boolean | never
+}
 
+interface IPlayerState {
+	playlistID: number
+	playlist: IPlaylist
+
+	songIndex: number
+	song: ISong
+
+	repeat: boolean
+	shuffle: boolean
+}
+
+function playerReducer(
+	state: IPlayerState,
+	action: IPlayerAction
+): IPlayerState {
+	if (action.type === IPlayerEnum.NEXT) {
+		action.type = IPlayerEnum.SONG_INDEX
+		action.index = action.index++
+	} else if (action.type === IPlayerEnum.PREVIOUS) {
+		action.type = IPlayerEnum.SONG_INDEX
+		action.index = action.index--
+	}
+
+	if (action.type === IPlayerEnum.SONG_INDEX) 
+		return {
+			...state,
+
+			songIndex: action.index,
+			song: songs[playlists[state.playlistID].songs[action.index]],
+		}
+	
+	if (action.type === IPlayerEnum.TOGGLE_REPEAT) {
+		action.type = IPlayerEnum.REPEAT
+		action.state = !state.repeat
+	} else if (action.type === IPlayerEnum.TOGGLE_SHUFFLE) {
+		action.type = IPlayerEnum.SHUFFLE
+		action.state = !state.shuffle
+	}
+
+	if (action.type === IPlayerEnum.REPEAT) 
+		return { ...state, repeat: action.state }
+
+	if (action.type === IPlayerEnum.SHUFFLE)
+		return { ...state, shuffle: action.state }
+	
+	if (action.type === IPlayerEnum.PLAYLIST_ID)
+		return {
+			...state,
+
+			playlistID: action.id,
+			playlist: playlists[action.id],
+
+			songIndex: 0,
+			song: songs[playlists[action.id].songs[0]],
+		}
+	
+
+	throw Error("Unknown action.")
+}
+
+function Player2() {
+	const init: IPlayerState = {
+		playlistID: 0,
+		playlist: playlists[0],
+
+		songIndex: 0,
+		song: songs[playlists[0].songs[0]],
+
+		repeat: false,
+		shuffle: false,
+	}
+
+	const [player, playerDispatch] = useReducer(playerReducer, init)
+
+	return <main className="player"></main>
+}
+*/
 function Player({
 	songID,
 	isPlaying,
@@ -167,3 +264,4 @@ function Player({
 }
 
 export default Player
+export { Player }
