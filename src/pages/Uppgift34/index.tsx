@@ -5,7 +5,7 @@ import Header from "./header.tsx"
 import Playlist from "./playlist.tsx"
 import Player from "./player.tsx"
 import "./index.scss"
-
+/*
 function shuffleArray<T>(array: Array<T>): Array<T> {
 	const array2 = [...array]
 
@@ -23,14 +23,13 @@ function shuffleArray<T>(array: Array<T>): Array<T> {
 
 	return array2
 }
-
+*/
 function Uppgift34() {
 	const [playlistID] = useState(0)
 	const [songIndex, setSongIndex] = useState(0)
 	const [isPlaying, setIsPlaying] = useState(false)
 
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	const [shuffledList, setShuffledList] = useState<number[] | null>(null)
+	//const [shuffledList, setShuffledList] = useState<number[] | null>(null)
 
 	const [playlistLength, setPlaylistLength] = useState(0)
 	const [songID, setSongID] = useState(0)
@@ -38,11 +37,12 @@ function Uppgift34() {
 	const background2Ref = useRef<HTMLDivElement>(null)
 	const background1Ref = useRef<HTMLDivElement>(null)
 
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	/*
 	const shuffleList = () => {
 		setShuffledList(shuffleArray([...Array(playlistLength).keys()]))
 		setSongIndex(0)
 	}
+	*/
 
 	useEffect(() => {
 		setPlaylistLength(playlists[playlistID].songs.length)
