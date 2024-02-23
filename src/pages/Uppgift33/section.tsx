@@ -15,7 +15,7 @@ function Section({
 		<section
 			id={title.toLowerCase()}
 			style={{
-				backgroundImage: `url("src/pages/Uppgift33/assets/${title.toLowerCase()}.jpg")`,
+				backgroundImage: `url("public/Uppgift33/${title.toLowerCase()}.jpg")`,
 			}}
 		>
 			<h1>{title}</h1>
