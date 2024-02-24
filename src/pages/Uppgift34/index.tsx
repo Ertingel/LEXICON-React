@@ -1,53 +1,31 @@
-import { useState, useEffect, useRef } from "react"
+import { useEffect, useRef, useReducer } from "react"
 import { songs, playlists } from "./songs"
 
 import Header from "./header.tsx"
 import Playlist from "./playlist.tsx"
 import Player from "./player.tsx"
 import "./index.scss"
-/*
-function shuffleArray<T>(array: Array<T>): Array<T> {
-	const array2 = [...array]
 
-	let currentIndex = array2.length,
-		randomIndex
+import { playerReducer, PlayerState } from "./playerReducer.ts"
 
-	while (currentIndex > 0) {
-		randomIndex = Math.floor(Math.random() * currentIndex)
-		currentIndex--
-		;[array2[currentIndex], array2[randomIndex]] = [
-			array2[randomIndex],
-			array2[currentIndex],
-		]
+function Uppgift34() {
+	const init: PlayerState = {
+		playlistID: 0,
+		playlist: playlists[0],
+
+		songIndex: 0,
+		song: songs[playlists[0].songs[0]],
+
+		playing: false,
+		repeat: false,
+		shuffle: false,
+		favourite: false,
 	}
 
-	return array2
-}
-*/
-function Uppgift34() {
-	const [playlistID] = useState(0)
-	const [songIndex, setSongIndex] = useState(0)
-	const [isPlaying, setIsPlaying] = useState(false)
-
-	//const [shuffledList, setShuffledList] = useState<number[] | null>(null)
-
-	const [playlistLength, setPlaylistLength] = useState(0)
-	const [songID, setSongID] = useState(0)
+	const [player, playerDispatch] = useReducer(playerReducer, init)
 
 	const background2Ref = useRef<HTMLDivElement>(null)
 	const background1Ref = useRef<HTMLDivElement>(null)
-
-	/*
-	const shuffleList = () => {
-		setShuffledList(shuffleArray([...Array(playlistLength).keys()]))
-		setSongIndex(0)
-	}
-	*/
-
-	useEffect(() => {
-		setPlaylistLength(playlists[playlistID].songs.length)
-		setSongID(songs[playlists[playlistID].songs[songIndex]].id)
-	}, [playlistID, songIndex, songID])
 
 	useEffect(() => {
 		if (background1Ref.current) {
@@ -61,7 +39,7 @@ function Uppgift34() {
 
 			background1Ref.current.style.setProperty(
 				"background-image",
-				`url("/LEXICON-React/Uppgift34/${songs[songID].cover_file}")`
+				`url("/LEXICON-React/Uppgift34/${player.song.cover_file}")`
 			)
 
 			background1Ref.current.animate(
@@ -69,15 +47,7 @@ function Uppgift34() {
 				{ duration: 1000 }
 			)
 		}
-	}, [songID])
-
-	const selectSong = (index: number) => {
-		if (index == songIndex) setIsPlaying(!isPlaying)
-		else {
-			setSongIndex(index)
-			setIsPlaying(true)
-		}
-	}
+	}, [player.song.cover_file])
 
 	return (
 		<article id="uppgift34">
@@ -85,37 +55,9 @@ function Uppgift34() {
 			<div id="background1" ref={background1Ref}></div>
 
 			<div id="player">
-				<Header playlistID={playlistID} />
-				<Playlist
-					playlistID={playlistID}
-					songID={songID}
-					isPlaying={isPlaying}
-					onSelect={selectSong}
-				/>
-				<Player
-					songID={songID}
-					isPlaying={isPlaying}
-					// eslint-disable-next-line @typescript-eslint/no-unused-vars
-					onPrevius={(_repeat, _shuffle) => {
-						if (songIndex > 0) {
-							setSongIndex(songIndex - 1)
-							setIsPlaying(true)
-						}
-					}}
-					// eslint-disable-next-line @typescript-eslint/no-unused-vars
-					onNext={(repeat, _shuffle) => {
-						if (songIndex < playlistLength - 1) {
-							setSongIndex(songIndex + 1)
-							setIsPlaying(true)
-						} else {
-							setSongIndex(0)
-							setIsPlaying(repeat)
-						}
-					}}
-					onPlayPause={playing => {
-						setIsPlaying(playing)
-					}}
-				/>
+				<Header playlist={player.playlist} />
+				<Playlist player={player} playerDispatch={playerDispatch} />
+				<Player player={player} playerDispatch={playerDispatch} />
 			</div>
 		</article>
 	)

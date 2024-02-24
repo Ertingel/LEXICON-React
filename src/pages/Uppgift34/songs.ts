@@ -1,4 +1,4 @@
-interface ISong {
+interface Song {
 	id: number
 	artist: string
 	song: string
@@ -6,7 +6,7 @@ interface ISong {
 	cover_file: string
 }
 
-const songs: Record<number, ISong> = {
+const songs: Record<number, Song> = {
 	0: {
 		id: 0,
 		artist: "Modern Pitch",
@@ -51,13 +51,13 @@ const songs: Record<number, ISong> = {
 	},
 }
 
-interface IPlaylist {
+interface Playlist {
 	id: number
 	title: string
 	songs: number[]
 }
 
-const playlists: Record<number, IPlaylist> = {
+const playlists: Record<number, Playlist> = {
 	0: {
 		id: 0,
 		title: "Rock",
@@ -67,5 +67,5 @@ const playlists: Record<number, IPlaylist> = {
 
 const favorites = new Set<number>([1, 2])
 
-export type { ISong, IPlaylist }
+export type { Song, Playlist }
 export { songs, playlists, favorites }

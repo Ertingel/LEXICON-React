@@ -1,30 +1,37 @@
-import { songs, playlists } from "./songs"
+import { Dispatch } from "react"
+import { songs } from "./songs"
+import { PlayerEnum, PlayerState, PlayerAction } from "./playerReducer.ts"
 import "./playlist.scss"
 
 function Playlist({
-	playlistID,
-	songID,
-	isPlaying,
-	onSelect,
+	player,
+	playerDispatch,
 }: {
-	playlistID: number
-	songID: number
-	isPlaying: boolean
-	onSelect: (index: number) => void
+	player: PlayerState
+	playerDispatch: Dispatch<PlayerAction>
 }) {
-	const curentPlaylist = playlists[playlistID]
-
 	return (
 		<aside className="playlist">
 			<ol id="playlist">
-				{curentPlaylist.songs.map((id, index) => {
-					const song = songs[id]
+				{player.playlist.songs.map((songID, index) => {
+					const song = songs[songID]
 
 					return (
-						<li key={id} className={songID === id ? "playing" : ""}>
+						<li
+							key={song.id}
+							className={song === player.song ? "playing" : ""}
+						>
 							<button
 								onClick={() => {
-									onSelect(index)
+									if (player.songIndex === index)
+										playerDispatch({
+											type: PlayerEnum.TOGGLE_PLAYING,
+										})
+									else
+										playerDispatch({
+											type: PlayerEnum.SONG_INDEX,
+											index,
+										})
 								}}
 							>
 								<img
@@ -36,7 +43,7 @@ function Playlist({
 									<small>{song.song}</small>
 								</p>
 								<div className="material-icons">
-									{isPlaying && songID === id
+									{player.playing && song === player.song
 										? "pause_circle"
 										: "play_circle"}
 								</div>
