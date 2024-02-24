@@ -41,9 +41,16 @@ function Uppgift33() {
 			<header>
 				<nav>
 					{content.map(({ title }) => (
-						<a key={title} href={`#${title.toLowerCase()}`}>
+						<button
+							key={title}
+							onClick={() => {
+								document
+									.getElementById(title.toLowerCase())
+									?.scrollIntoView()
+							}}
+						>
 							{title}
-						</a>
+						</button>
 					))}
 				</nav>
 			</header>

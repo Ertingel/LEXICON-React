@@ -51,6 +51,14 @@
 
 				font-size: 2em;
 				font-family: "Spirax", sans-serif;
+				background: transparent;
+				border: none;
+				outline: none;
+
+				&:hover,
+				&:focus {
+					text-decoration: underline;
+				}
 			}
 
 			* {
