@@ -2,6 +2,8 @@
 
 Detta är min repository för LEXICON läxor inom React.
 
+Varje uppgift har en länk till en respektive fil.
+
 Instruktioner för varje uppgift kan hittas [här](https://github.com/Ertingel/LEXICON-React/tree/main/Instruktioner).
 
 ---

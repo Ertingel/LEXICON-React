@@ -1,0 +1,260 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap");
+
+.material-symbols-rounded {
+	font-variation-settings: "FILL" 1, "wght" 400, "GRAD" 0, "opsz" 40;
+
+	line-height: 1em;
+	text-align: center;
+}
+
+:root {
+	font-size: min(3vmin, 16px);
+}
+
+body {
+	min-height: 100vh;
+
+	/*
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+		Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+		"Segoe UI Symbol";
+		*/
+	font-family: "Roboto", sans-serif;
+
+	display: flex;
+	flex-flow: column nowrap;
+	justify-content: center;
+	align-items: center;
+}
+
+* {
+	padding: 0;
+	margin: 0;
+}
+
+button,
+input,
+input[type="checkbox"]::after {
+	box-sizing: border-box;
+
+	min-width: 2.75rem;
+	min-height: 2.75rem;
+	padding: 0.5rem;
+	font-size: 1em;
+
+	color: #994538;
+	background-color: #ffffff88;
+	border-radius: 0.5rem;
+
+	border: none;
+	outline: none;
+}
+
+input::placeholder {
+	color: #99453888;
+}
+
+button,
+input[type="button"],
+input[type="submit"],
+input[type="checkbox"]::after {
+	font-weight: bold;
+	font-size: 2em !important;
+	padding: 0.25rem;
+
+	text-align: center;
+
+	transition: transform 0.15s ease-in-out, background-color 0.15s ease-in-out;
+	transform: scale(1);
+}
+
+button:hover,
+input[type="button"]:hover,
+input[type="submit"]:hover,
+input[type="checkbox"]:hover::after,
+button:focus,
+input[type="button"]:focus,
+input[type="submit"]:focus,
+input[type="checkbox"]:focus::after {
+	transform: scale(1.15);
+}
+
+button:active,
+input[type="button"]:active,
+input[type="submit"]:active {
+	color: #efeae7;
+	background-color: #994538;
+}
+
+input[type="checkbox"] {
+	position: relative;
+	appearance: none;
+
+	background: none;
+}
+
+input[type="checkbox"]::after {
+	content: " ";
+
+	position: absolute;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	right: 0;
+
+	color: #ffffffcc;
+	border: #994538 solid 0.15rem;
+
+	font-size: 2rem !important;
+	line-height: 1em;
+	text-align: center;
+}
+
+input[type="checkbox"]:checked:after {
+	content: "done";
+	background-color: #994538;
+}
+
+#background {
+	position: fixed;
+	z-index: -1;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	right: 0;
+
+	background-image: url("./assets/images/selective-focus-photography-of-cherry-blossoms.jpg");
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: cover;
+
+	filter: blur(0.1rem);
+}
+
+#todo {
+	width: 30rem;
+	padding: 1rem;
+
+	color: #994538;
+	background-color: #d5c0b5aa;
+	border-radius: 1rem;
+	backdrop-filter: blur(0.3rem);
+
+	display: flex;
+	flex-flow: column nowrap;
+	justify-content: flex-start;
+	align-items: stretch;
+}
+
+#todo > h1 {
+	text-align: center;
+}
+
+#todo-filter {
+	margin-bottom: -0.3rem;
+
+	display: grid;
+	gap: 0 0.5rem;
+	grid:
+		"clear text" auto
+		". info" auto
+		/ auto 1fr;
+}
+
+#todo-filter-text {
+	grid-area: text;
+}
+
+#todo-filter-clear {
+	grid-area: clear;
+}
+
+#todo-filter-info {
+	grid-area: info;
+	padding-inline: 0.5rem;
+	text-align: right;
+}
+
+#todo-list {
+	display: flex;
+	flex-flow: column nowrap;
+	justify-content: flex-start;
+	align-items: stretch;
+
+	list-style-type: none;
+}
+
+.todo-item {
+	margin-block: -0.3rem;
+
+	display: grid;
+	gap: 0;
+	grid:
+		". . tags ." auto
+		"completed . text remove" auto
+		". . date date" auto
+		/ auto 0.5rem 1fr auto;
+}
+
+.todo-item.draging {
+	transform: scale(1.05, 1.1);
+
+	user-select: none;
+}
+
+#todo-list.draging {
+	user-select: none;
+}
+
+.todo-item > .completed {
+	grid-area: completed;
+}
+
+.todo-item > .completed:checked ~ input[type="text"],
+.todo-item > .completed:checked ~ .date {
+	text-decoration: line-through;
+}
+
+.todo-item > .completed:not(:checked) ~ .remove {
+	min-width: 0;
+	width: 0;
+	padding: 0;
+}
+
+.todo-item > .completed:checked ~ .remove {
+	margin-left: 0.5rem;
+}
+
+.todo-item > .tag {
+	grid-area: tags;
+
+	margin: 0;
+	padding: 0;
+	min-height: 1em;
+	padding-inline: 0.5rem;
+
+	background: none;
+}
+
+.todo-item > .text {
+	grid-area: text;
+}
+
+.todo-item > .remove {
+	grid-area: remove;
+
+	overflow: hidden;
+	transition: 0.15s;
+}
+
+.todo-item > .date {
+	grid-area: date;
+
+	padding-inline: 0.5rem;
+
+	text-align: right;
+}
+
+#todo-add.todo-item > .date {
+	color: #99453888;
+}
