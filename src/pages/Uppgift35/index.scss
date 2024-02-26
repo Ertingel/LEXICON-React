@@ -59,27 +59,30 @@
 		text-align: center;
 		font-weight: bold;
 
-		transition: transform 0.15s ease-in-out,
+		transition: transform 0.15s ease-in-out, color 0.15s ease-in-out,
 			background-color 0.15s ease-in-out;
 		transform: scale(1);
 	}
 
-	button:hover,
-	input[type="button"]:hover,
-	input[type="submit"]:hover,
-	input[type="checkbox"]:hover::after,
-	button:focus,
-	input[type="button"]:focus,
-	input[type="submit"]:focus,
-	input[type="checkbox"]:focus::after {
-		transform: scale(1.15);
+	button,
+	input[type="button"],
+	input[type="submit"] {
+		&:hover,
+		&:focus {
+			transform: scale(1.15);
+		}
+
+		&:active {
+			color: #efeae7;
+			background-color: #994538;
+		}
 	}
 
-	button:active,
-	input[type="button"]:active,
-	input[type="submit"]:active {
-		color: #efeae7;
-		background-color: #994538;
+	input[type="checkbox"] {
+		&:hover::after,
+		&:focus::after {
+			transform: scale(1.15);
+		}
 	}
 
 	input[type="checkbox"] {
@@ -181,75 +184,8 @@
 		list-style-type: none;
 	}
 
-	.todo-item {
-		margin-block: -0.3em;
-
-		display: grid;
-		gap: 0;
-		grid:
-			". . tags ." auto
-			"completed . text emove" auto
-			". . date date" auto
-			/ auto 0.5em 1fr auto;
-	}
-
-	.todo-item.draging {
-		transform: scale(1.05, 1.1);
-
-		user-select: none;
-	}
-
 	#todo-list.draging {
 		user-select: none;
-	}
-
-	.todo-item > .completed {
-		grid-area: completed;
-	}
-
-	.todo-item > .completed:checked ~ input[type="text"],
-	.todo-item > .completed:checked ~ .date {
-		text-decoration: line-through;
-	}
-
-	.todo-item > .completed:not(:checked) ~ .emove {
-		min-width: 0;
-		width: 0;
-		padding: 0;
-	}
-
-	.todo-item > .completed:checked ~ .emove {
-		margin-left: 0.5em;
-	}
-
-	.todo-item > .tag {
-		grid-area: tags;
-
-		margin: 0;
-		padding: 0;
-		min-height: 1em;
-		padding-inline: 0.5em;
-
-		background: none;
-	}
-
-	.todo-item > .text {
-		grid-area: text;
-	}
-
-	.todo-item > .emove {
-		grid-area: emove;
-
-		overflow: hidden;
-		transition: 0.15s;
-	}
-
-	.todo-item > .date {
-		grid-area: date;
-
-		padding-inline: 0.5em;
-
-		text-align: right;
 	}
 
 	#todo-add.todo-item > .date {

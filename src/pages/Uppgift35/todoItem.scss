@@ -1,0 +1,66 @@
+#Uppgift35 .todo-item {
+	margin-block: -0.3em;
+
+	display: grid;
+	gap: 0;
+	grid:
+		". . tags ." auto
+		"completed . text remove" auto
+		". . date date" auto
+		/ auto 0.5em 1fr auto;
+
+	&.draging {
+		transform: scale(1.05, 1.1);
+
+		user-select: none;
+	}
+
+	& > .completed {
+		grid-area: completed;
+
+		&:checked ~ input[type="text"],
+		&:checked ~ .date {
+			text-decoration: line-through;
+		}
+
+		&:not(:checked) ~ .remove {
+			min-width: 0;
+			width: 0;
+			padding: 0;
+		}
+
+		&:checked ~ .remove {
+			margin-left: 0.5em;
+		}
+	}
+
+	& > .tag {
+		grid-area: tags;
+
+		margin: 0;
+		padding: 0;
+		min-height: 1em;
+		padding-inline: 0.5em;
+
+		background: none;
+	}
+
+	& > .text {
+		grid-area: text;
+	}
+
+	& > .remove {
+		grid-area: remove;
+
+		overflow: hidden;
+		transition: 0.15s;
+	}
+
+	& > .date {
+		grid-area: date;
+
+		padding-inline: 0.5em;
+
+		text-align: right;
+	}
+}

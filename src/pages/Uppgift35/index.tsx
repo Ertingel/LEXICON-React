@@ -1,5 +1,7 @@
 import { useState, useReducer } from "react"
 import { todoReducer, TodoEnum, TodoState } from "./todoReducer"
+
+import TodoItem from "./todoItem"
 import "./index.scss"
 
 function Uppgift35() {
@@ -42,7 +44,7 @@ function Uppgift35() {
 
 				<ul id="todo-list">
 					{todo.list.map(item => (
-						<p key={item.id}>{item.text}</p>
+						<TodoItem key={item.id} item={item} />
 					))}
 				</ul>
 
@@ -52,12 +54,10 @@ function Uppgift35() {
 					onSubmit={() => {
 						todoDispatch({
 							type: TodoEnum.ADD,
-							item: {
-								text: addText,
-								completed: false,
-								tag: addTag,
-								time: new Date(),
-							},
+							text: addText,
+							completed: false,
+							tag: addTag,
+							time: new Date(),
 						})
 					}}
 				>
