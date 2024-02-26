@@ -49,11 +49,15 @@
 	input[type="button"],
 	input[type="submit"],
 	input[type="checkbox"]::after {
-		font-weight: bold;
+		min-width: 1.375em;
+		min-height: 1.375em;
+		padding: 0.125em;
 		font-size: 2em !important;
-		padding: 0.25em;
+
+		border-radius: 0.25em;
 
 		text-align: center;
+		font-weight: bold;
 
 		transition: transform 0.15s ease-in-out,
 			background-color 0.15s ease-in-out;
@@ -95,10 +99,10 @@
 		right: 0;
 
 		color: #ffffffcc;
-		border: #994538 solid 0.15em;
+		border: #994538 solid 0.075em;
 
 		font-size: 2em !important;
-		line-height: 1em;
+		line-height: 0.5em;
 		text-align: center;
 	}
 
@@ -139,6 +143,7 @@
 	}
 
 	#todo > h1 {
+		font-size: 2em;
 		text-align: center;
 	}
 
