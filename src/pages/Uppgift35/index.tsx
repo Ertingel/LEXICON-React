@@ -1,4 +1,4 @@
-import { useState, useReducer } from "react"
+import { useState, useEffect, useReducer } from "react"
 import { todoReducer, TodoEnum, TodoState } from "./todoReducer"
 
 import TodoItem from "./todoItem"
@@ -35,8 +35,40 @@ function Uppgift35() {
 	const [todo, todoDispatch] = useReducer(todoReducer, init)
 
 	const [filter, setFilter] = useState("")
+	const [filteredList, setFilteredList] = useState(todo.list)
+	const [filterText, setFilterText] = useState(`${todo.list.length} Items`)
+
 	const [addText, setAddText] = useState("")
 	const [addTag, setAddTag] = useState("")
+
+	useEffect(() => {
+		if (/^\s*$/gu.test(filter)) {
+			setFilteredList(todo.list)
+			return
+		}
+
+		const pattern = new RegExp(
+			(filter.match(/\S+/gu) ?? [""]).join("|"),
+			"giu"
+		)
+
+		setFilteredList(
+			todo.list.filter(
+				e =>
+					pattern.test(e.text) ||
+					pattern.test(e.tag) ||
+					pattern.test(e.time.toString().substring(0, 24))
+			)
+		)
+	}, [todo, filter])
+
+	useEffect(() => {
+		setFilterText(
+			todo.list.length != filteredList.length
+				? `${filteredList.length} / ${todo.list.length} Items`
+				: `${filteredList.length} Items`
+		)
+	}, [todo.list, filteredList])
 
 	return (
 		<section id="Uppgift35">
@@ -73,11 +105,11 @@ function Uppgift35() {
 					>
 						refresh
 					</button>
-					<p id="todo-filter-info">{todo.list.length} items</p>
+					<p id="todo-filter-info">{filterText}</p>
 				</div>
 
 				<ul id="todo-list">
-					{todo.list.map(item => (
+					{filteredList.map(item => (
 						<TodoItem
 							key={item.id}
 							item={item}

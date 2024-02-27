@@ -2,6 +2,21 @@ import { useState, useEffect, Dispatch, memo } from "react"
 import { TodoEntry, TodoAction, TodoEnum } from "./todoReducer"
 import "./todoItem.scss"
 
+function getTimeGap(time: Date): number {
+	const now = new Date()
+	const delta = now.valueOf() - time.valueOf()
+
+	const second = 1000
+	const minute = second * 60
+	const hour = minute * 60
+
+	console.log("time")
+
+	if (delta / minute < 1) return second
+	if (delta / hour < 1) return minute
+	return hour
+}
+
 function getTimeStr(time: Date): string {
 	const now = new Date()
 	const delta = now.valueOf() - time.valueOf()
@@ -59,7 +74,7 @@ const TodoItem = memo(function ({
 	useEffect(() => {
 		const interval = setInterval(() => {
 			setTimeText(getTimeStr(item.time))
-		}, 15000)
+		}, getTimeGap(item.time))
 		return () => clearInterval(interval)
 	})
 
