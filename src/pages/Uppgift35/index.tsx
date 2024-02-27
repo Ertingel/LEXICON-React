@@ -1,4 +1,4 @@
-import { useState, useEffect, useReducer } from "react"
+import { useState, useEffect, useReducer, useRef } from "react"
 import { todoReducer, TodoEnum, TodoState } from "./todoReducer"
 
 import TodoItem from "./todoItem"
@@ -40,6 +40,45 @@ function Uppgift35() {
 
 	const [addText, setAddText] = useState("")
 	const [addTag, setAddTag] = useState("")
+
+	const listRef = useRef<HTMLOListElement>(null)
+	const [dragging, setDragging] = useState(false)
+
+	const dragStart: React.MouseEventHandler<HTMLUListElement> = e => {
+		if (!listRef.current) return
+		setDragging(true)
+
+		const { y, height } = listRef.current.getBoundingClientRect()
+		const index = Math.floor(
+			((e.clientY - y) / height) * filteredList.length
+		)
+
+		console.log(index)
+	}
+
+	const dragMove: React.MouseEventHandler<HTMLUListElement> = e => {
+		if (!dragging) return
+		if (!listRef.current) return
+
+		const { y, height } = listRef.current.getBoundingClientRect()
+		const index = Math.floor(
+			((e.clientY - y) / height) * filteredList.length
+		)
+
+		console.log(index)
+	}
+
+	const dragEnd: React.MouseEventHandler<HTMLUListElement> = e => {
+		setDragging(false)
+		if (!listRef.current) return
+
+		const { y, height } = listRef.current.getBoundingClientRect()
+		const index = Math.floor(
+			((e.clientY - y) / height) * filteredList.length
+		)
+
+		console.log(index)
+	}
 
 	useEffect(() => {
 		if (/^\s*$/gu.test(filter)) {
@@ -108,7 +147,14 @@ function Uppgift35() {
 					<p id="todo-filter-info">{filterText}</p>
 				</div>
 
-				<ul id="todo-list">
+				<ul
+					ref={listRef}
+					id="todo-list"
+					onMouseDown={dragStart}
+					onMouseUp={dragEnd}
+					onMouseLeave={dragEnd}
+					onMouseMove={dragMove}
+				>
 					{filteredList.map(item => (
 						<TodoItem
 							key={item.id}
