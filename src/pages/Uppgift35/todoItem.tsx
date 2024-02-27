@@ -1,6 +1,6 @@
+import { useState, useEffect, Dispatch, memo } from "react"
 import { TodoEntry, TodoAction, TodoEnum } from "./todoReducer"
 import "./todoItem.scss"
-import { Dispatch } from "react"
 
 function getTimeStr(time: Date): string {
 	const now = new Date()
@@ -48,13 +48,21 @@ function getTimeStr(time: Date): string {
 	}-${time.getDate()} ${clock}`
 }
 
-function TodoItem({
+const TodoItem = memo(function ({
 	item,
 	todoDispatch,
 }: {
 	item: TodoEntry
 	todoDispatch: Dispatch<TodoAction>
 }) {
+	const [timeText, setTimeText] = useState(getTimeStr(item.time))
+	useEffect(() => {
+		const interval = setInterval(() => {
+			setTimeText(getTimeStr(item.time))
+		}, 15000)
+		return () => clearInterval(interval)
+	})
+
 	return (
 		<li className="todo-item">
 			<input
@@ -69,6 +77,19 @@ function TodoItem({
 						text: e.target.value,
 					})
 				}}
+				onBlur={() => {
+					if (/^\s*$/gu.test(item.text))
+						todoDispatch({
+							type: TodoEnum.REMOVE,
+							id: item.id,
+						})
+					else
+						todoDispatch({
+							type: TodoEnum.SET_TEXT,
+							id: item.id,
+							text: item.text.trim(),
+						})
+				}}
 			/>
 			<input
 				className="tag"
@@ -81,6 +102,20 @@ function TodoItem({
 						id: item.id,
 						tag: e.target.value,
 					})
+				}}
+				onBlur={() => {
+					if (/^\s*$/gu.test(item.text))
+						todoDispatch({
+							type: TodoEnum.SET_TAG,
+							id: item.id,
+							tag: "",
+						})
+					else
+						todoDispatch({
+							type: TodoEnum.SET_TAG,
+							id: item.id,
+							tag: item.tag.trim(),
+						})
 				}}
 			/>
 			<input
@@ -106,10 +141,10 @@ function TodoItem({
 				}}
 			/>
 			<time className="date" dateTime={item.time.toString()}>
-				{getTimeStr(item.time)}
+				{timeText}
 			</time>
 		</li>
 	)
-}
+})
 
 export default TodoItem

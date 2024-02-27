@@ -14,6 +14,7 @@ interface TodoState {
 
 enum TodoEnum {
 	MOVE = "MOVE",
+	NEW = "NEW",
 	ADD = "ADD",
 	REMOVE = "REMOVE",
 	SET_TEXT = "SET_TEXT",
@@ -42,6 +43,16 @@ function todoReducer(state: TodoState, action: TodoAction): TodoState {
 			...state,
 			list: state.list.filter(item => item.id != action.id),
 		}
+
+	if (
+		action.type === TodoEnum.NEW &&
+		typeof action.text !== "undefined" &&
+		typeof action.tag !== "undefined"
+	) {
+		action.type = TodoEnum.ADD
+		action.completed = false
+		action.time = new Date()
+	}
 
 	if (
 		action.type === TodoEnum.ADD &&

@@ -2,6 +2,7 @@
 
 #Uppgift35 {
 	font-size: min(3vmin, 16px);
+	--rem: min(3vmin, 16px);
 
 	min-height: 100vh;
 	font-family: "Roboto", sans-serif;
@@ -32,14 +33,14 @@
 	input[type="checkbox"]::after {
 		box-sizing: border-box;
 
-		min-width: 1.375em;
-		min-height: 1.375em;
-		padding: 0.25em;
+		min-width: calc(2.75 * var(--rem));
+		min-height: calc(2.75 * var(--rem));
+		padding: calc(0.5 * var(--rem));
 		font-size: 1em;
 
 		color: #994538;
 		background-color: #ffffff88;
-		border-radius: 0.25em;
+		border-radius: calc(0.5 * var(--rem));
 
 		border: none;
 		outline: none;
@@ -55,7 +56,7 @@
 	input[type="checkbox"]::after {
 		font-weight: bold;
 		font-size: 2em !important;
-		padding: 0.125em;
+		padding: calc(0.25 * var(--rem));
 
 		text-align: center;
 
@@ -100,8 +101,9 @@
 		right: 0;
 
 		color: #ffffffcc;
-		border: #994538 solid 0.075em;
+		border: #994538 solid calc(0.15 * var(--rem));
 
+		font-size: calc(2 * var(--rem)) !important;
 		line-height: 1em;
 		text-align: center;
 	}
@@ -130,6 +132,7 @@
 	#todo {
 		width: 30em;
 		padding: 1em;
+		margin-block: 2em;
 
 		color: #994538;
 		background-color: #d5c0b5aa;

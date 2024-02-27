@@ -6,12 +6,35 @@ import "./index.scss"
 
 function Uppgift35() {
 	const init: TodoState = {
-		nextID: 0,
-		list: [],
+		nextID: 3,
+		list: [
+			{
+				id: 0,
+				text: "Pizza",
+				completed: false,
+				tag: "Food",
+				time: new Date(new Date().valueOf() - 100000000),
+			},
+			{
+				id: 1,
+				text: "Taco",
+				completed: true,
+				tag: "Food",
+				time: new Date(new Date().valueOf() - 10000000),
+			},
+			{
+				id: 2,
+				text: "Snacks",
+				completed: false,
+				tag: "Food",
+				time: new Date(new Date().valueOf() - 1000000),
+			},
+		],
 	}
 
 	const [todo, todoDispatch] = useReducer(todoReducer, init)
 
+	const [filter, setFilter] = useState("")
 	const [addText, setAddText] = useState("")
 	const [addTag, setAddTag] = useState("")
 
@@ -32,10 +55,21 @@ function Uppgift35() {
 						id="todo-filter-text"
 						type="text"
 						placeholder="Filter"
+						value={filter}
+						onChange={e => {
+							if (/^\s*$/gu.test(e.target.value)) setFilter("")
+							else setFilter(e.target.value)
+						}}
+						onBlur={() => {
+							setFilter(
+								/^\s*$/gu.test(filter) ? "" : filter.trim()
+							)
+						}}
 					/>
 					<button
 						id="todo-filter-clear"
 						className="material-symbols-rounded"
+						onClick={() => setFilter("")}
 					>
 						refresh
 					</button>
@@ -56,13 +90,16 @@ function Uppgift35() {
 					id="todo-add"
 					className="todo-item"
 					onSubmit={e => {
-						todoDispatch({
-							type: TodoEnum.ADD,
-							text: addText,
-							completed: false,
-							tag: addTag,
-							time: new Date(),
-						})
+						let newTag = addTag
+
+						if (/^\s*$/gu.test(newTag)) newTag = ""
+
+						if (!/^\s*$/gu.test(addText))
+							todoDispatch({
+								type: TodoEnum.NEW,
+								text: addText,
+								tag: newTag,
+							})
 
 						setAddText("")
 						setAddTag("")
@@ -77,7 +114,15 @@ function Uppgift35() {
 						placeholder="Add To Do"
 						required
 						value={addText}
-						onChange={e => setAddText(e.target.value)}
+						onChange={e => {
+							if (/^\s*$/gu.test(e.target.value)) setAddText("")
+							else setAddText(e.target.value)
+						}}
+						onBlur={() => {
+							setAddText(
+								/^\s*$/gu.test(addText) ? "" : addText.trim()
+							)
+						}}
 					/>
 					<input
 						id="todo-add-tag"
@@ -85,7 +130,15 @@ function Uppgift35() {
 						type="text"
 						placeholder="Untagged"
 						value={addTag}
-						onChange={e => setAddTag(e.target.value)}
+						onChange={e => {
+							if (/^\s*$/gu.test(e.target.value)) setAddTag("")
+							else setAddTag(e.target.value)
+						}}
+						onBlur={() => {
+							setAddTag(
+								/^\s*$/gu.test(addTag) ? "" : addTag.trim()
+							)
+						}}
 					/>
 					<input
 						id="todo-add-button"
