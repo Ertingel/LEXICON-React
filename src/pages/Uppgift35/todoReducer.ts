@@ -17,6 +17,7 @@ enum TodoEnum {
 	ADD = "ADD",
 	REMOVE = "REMOVE",
 	SET_TEXT = "SET_TEXT",
+	TOGGLE_COMPLETED = "TOGGLE_COMPLETED",
 	SET_COMPLETED = "SET_COMPLETED",
 	SET_TAG = "SET_TAG",
 	SET_TIME = "SET_TIME",
@@ -53,6 +54,7 @@ function todoReducer(state: TodoState, action: TodoAction): TodoState {
 			...state,
 			nextID: state.nextID + 1,
 			list: [
+				...state.list,
 				{
 					id: state.nextID,
 					text: action.text,
@@ -60,7 +62,6 @@ function todoReducer(state: TodoState, action: TodoAction): TodoState {
 					tag: action.tag,
 					time: action.time,
 				},
-				...state.list,
 			],
 		}
 
@@ -73,16 +74,66 @@ function todoReducer(state: TodoState, action: TodoAction): TodoState {
 			...state,
 			list: state.list.map(item =>
 				item.id === action.id && typeof action.text !== "undefined"
-					? {
-							...item,
-							text: action.text,
-					  }
+					? { ...item, text: action.text }
 					: item
 			),
 		}
 
+	if (
+		action.type === TodoEnum.TOGGLE_COMPLETED &&
+		typeof action.id !== "undefined"
+	)
+		return {
+			...state,
+			list: state.list.map(item =>
+				item.id === action.id
+					? { ...item, completed: !item.completed }
+					: item
+			),
+		}
 
-		
+	if (
+		action.type === TodoEnum.SET_COMPLETED &&
+		typeof action.id !== "undefined" &&
+		typeof action.completed !== "undefined"
+	)
+		return {
+			...state,
+			list: state.list.map(item =>
+				item.id === action.id && typeof action.completed !== "undefined"
+					? { ...item, completed: action.completed }
+					: item
+			),
+		}
+
+	if (
+		action.type === TodoEnum.SET_TAG &&
+		typeof action.id !== "undefined" &&
+		typeof action.tag !== "undefined"
+	)
+		return {
+			...state,
+			list: state.list.map(item =>
+				item.id === action.id && typeof action.tag !== "undefined"
+					? { ...item, tag: action.tag }
+					: item
+			),
+		}
+
+	if (
+		action.type === TodoEnum.SET_TIME &&
+		typeof action.id !== "undefined" &&
+		typeof action.time !== "undefined"
+	)
+		return {
+			...state,
+			list: state.list.map(item =>
+				item.id === action.id && typeof action.time !== "undefined"
+					? { ...item, time: action.time }
+					: item
+			),
+		}
+
 	throw Error(`Unknown action. \n${JSON.stringify(action, null, 2)}`)
 }
 

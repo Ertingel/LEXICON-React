@@ -1,5 +1,6 @@
-import { TodoEntry } from "./todoReducer"
+import { TodoEntry, TodoAction, TodoEnum } from "./todoReducer"
 import "./todoItem.scss"
+import { Dispatch } from "react"
 
 function getTimeStr(time: Date): string {
 	const now = new Date()
@@ -47,7 +48,13 @@ function getTimeStr(time: Date): string {
 	}-${time.getDate()} ${clock}`
 }
 
-function TodoItem({ item }: { item: TodoEntry }) {
+function TodoItem({
+	item,
+	todoDispatch,
+}: {
+	item: TodoEntry
+	todoDispatch: Dispatch<TodoAction>
+}) {
 	return (
 		<li className="todo-item">
 			<input
@@ -55,25 +62,48 @@ function TodoItem({ item }: { item: TodoEntry }) {
 				type="text"
 				placeholder="Delete?"
 				value={item.text}
-				onChange={() => {}}
+				onChange={e => {
+					todoDispatch({
+						type: TodoEnum.SET_TEXT,
+						id: item.id,
+						text: e.target.value,
+					})
+				}}
 			/>
 			<input
 				className="tag"
 				type="text"
 				placeholder="Untagged"
 				value={item.tag}
-				onChange={() => {}}
+				onChange={e => {
+					todoDispatch({
+						type: TodoEnum.SET_TAG,
+						id: item.id,
+						tag: e.target.value,
+					})
+				}}
 			/>
 			<input
 				className="completed material-symbols-rounded"
 				type="checkbox"
 				checked={item.completed}
-				onChange={() => {}}
+				onChange={() => {
+					todoDispatch({
+						type: TodoEnum.TOGGLE_COMPLETED,
+						id: item.id,
+					})
+				}}
 			/>
 			<input
 				className="remove material-symbols-rounded"
 				type="button"
 				value="delete"
+				onClick={() => {
+					todoDispatch({
+						type: TodoEnum.REMOVE,
+						id: item.id,
+					})
+				}}
 			/>
 			<time className="date" dateTime={item.time.toString()}>
 				{getTimeStr(item.time)}

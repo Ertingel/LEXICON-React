@@ -39,19 +39,23 @@ function Uppgift35() {
 					>
 						refresh
 					</button>
-					<p id="todo-filter-info"></p>
+					<p id="todo-filter-info">{todo.list.length} items</p>
 				</div>
 
 				<ul id="todo-list">
 					{todo.list.map(item => (
-						<TodoItem key={item.id} item={item} />
+						<TodoItem
+							key={item.id}
+							item={item}
+							todoDispatch={todoDispatch}
+						/>
 					))}
 				</ul>
 
 				<form
 					id="todo-add"
 					className="todo-item"
-					onSubmit={() => {
+					onSubmit={e => {
 						todoDispatch({
 							type: TodoEnum.ADD,
 							text: addText,
@@ -59,6 +63,11 @@ function Uppgift35() {
 							tag: addTag,
 							time: new Date(),
 						})
+
+						setAddText("")
+						setAddTag("")
+
+						e.preventDefault()
 					}}
 				>
 					<input
