@@ -61,7 +61,7 @@ function getTimeStr(time: Date): string {
 	}-${time.getDate()} ${clock}`
 }
 
-const TodoItem = memo(function ({
+function TodoItemBase({
 	item,
 	todoDispatch,
 	position,
@@ -169,6 +169,8 @@ const TodoItem = memo(function ({
 			</time>
 		</li>
 	)
-})
+}
+
+const TodoItem = memo(TodoItemBase)
 
 export default TodoItem

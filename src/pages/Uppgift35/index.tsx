@@ -5,7 +5,7 @@ import TodoItem from "./todoItem"
 import "./index.scss"
 
 function Uppgift35() {
-	const init: TodoState = {
+	let init: TodoState = {
 		nextID: 3,
 		list: [
 			{
@@ -31,6 +31,19 @@ function Uppgift35() {
 			},
 		],
 	}
+
+	const storage = localStorage.getItem("Uppgift35")
+	if (storage)
+		try {
+			const init2: TodoState = JSON.parse(storage)
+			init2.list.forEach(
+				(_, i) => (init2.list[i].time = new Date(init2.list[i].time))
+			)
+
+			init = init2
+		} catch (e) {
+			console.error(e)
+		}
 
 	const [todo, todoDispatch] = useReducer(todoReducer, init)
 
@@ -91,25 +104,28 @@ function Uppgift35() {
 	}
 
 	useEffect(() => {
-		if (/^\s*$/gu.test(filter)) {
-			setFilteredList(todo.list)
-			return
+		let list = todo.list
+
+		if (!/^\s*$/gu.test(filter)) {
+			const pattern = new RegExp(
+				(filter.match(/\S+/gu) ?? [""]).join("|"),
+				"iu"
+			)
+			list = list.filter(
+				e =>
+					pattern.test(e.text) ||
+					pattern.test(e.tag) ||
+					pattern.test(e.time.toString().substring(0, 24))
+			)
 		}
 
-		const pattern = new RegExp(
-			(filter.match(/\S+/gu) ?? [""]).join("|"),
-			"giu"
-		)
-
-		const list = todo.list.filter(
-			e =>
-				pattern.test(e.text) ||
-				pattern.test(e.tag) ||
-				pattern.test(e.time.toString().substring(0, 24))
-		)
+		const sortedList = [...list]
+			.map((e, i) => ({ pos: i, item: e }))
+			.sort((a, b) => a.item.id - b.item.id)
 
 		setFilteredList(list)
-	}, [todo.list, filter])
+		setSortedFilteredList(sortedList)
+	}, [todo, filter])
 
 	useEffect(() => {
 		setFilterText(
@@ -120,14 +136,8 @@ function Uppgift35() {
 	}, [todo.list, filteredList])
 
 	useEffect(() => {
-		console.log(filteredList)
-		const list = [...filteredList]
-			.map((e, i) => ({ pos: i, item: e }))
-			.sort((a, b) => a.item.id - b.item.id)
-
-		console.log(list)
-		setSortedFilteredList(list)
-	}, [filteredList])
+		localStorage.setItem("Uppgift35", JSON.stringify(todo))
+	}, [todo])
 
 	return (
 		<section id="Uppgift35">
@@ -180,28 +190,15 @@ function Uppgift35() {
 					onMouseLeave={dragEnd}
 					onMouseMove={dragMove}
 				>
-					{
-						sortedFilteredList.map(({ pos, item }) => (
-							<TodoItem
-								key={item.id}
-								item={item}
-								todoDispatch={todoDispatch}
-								position={pos}
-								draged={dragging && draggedID === item.id}
-							/>
-						))
-						/*
-						filteredList.map((item, pos) => (
-							<TodoItem
-								key={item.id}
-								item={item}
-								todoDispatch={todoDispatch}
-								position={pos}
-								draged={dragging && draggedID === item.id}
-							/>
-						))
-						*/
-					}
+					{sortedFilteredList.map(({ pos, item }) => (
+						<TodoItem
+							key={item.id}
+							item={item}
+							todoDispatch={todoDispatch}
+							position={pos}
+							draged={dragging && draggedID === item.id}
+						/>
+					))}
 				</ul>
 
 				<form

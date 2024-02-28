@@ -54,7 +54,6 @@ function todoReducer(state: TodoState, action: TodoAction): TodoState {
 		typeof action.from !== "undefined" &&
 		typeof action.to !== "undefined"
 	) {
-		console.log(action.from, action.to)
 		const element = state.list[action.from]
 		const newList = [...state.list]
 		newList.splice(action.from, 1)
