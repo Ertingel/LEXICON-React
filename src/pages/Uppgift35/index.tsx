@@ -43,15 +43,19 @@ function Uppgift35() {
 
 	const listRef = useRef<HTMLOListElement>(null)
 	const [dragging, setDragging] = useState(false)
+	const [draggedID, setDraggedID] = useState(-1)
 
 	const dragStart: React.MouseEventHandler<HTMLUListElement> = e => {
 		if (!listRef.current) return
 		setDragging(true)
 
 		const { y, height } = listRef.current.getBoundingClientRect()
-		const index = Math.floor(
-			((e.clientY - y) / height) * filteredList.length
+		const decIndex = Math.max(
+			((e.clientY - y) / height) * filteredList.length,
+			0
 		)
+		const index = Math.floor(decIndex)
+		setDraggedID(filteredList[index].id)
 
 		console.log(index)
 	}
@@ -61,11 +65,23 @@ function Uppgift35() {
 		if (!listRef.current) return
 
 		const { y, height } = listRef.current.getBoundingClientRect()
-		const index = Math.floor(
-			((e.clientY - y) / height) * filteredList.length
+		const decIndex = Math.max(
+			((e.clientY - y) / height) * filteredList.length,
+			0
 		)
+		const above = decIndex % 1 < 0.5
+		const index = Math.floor(decIndex)
+		const id = filteredList[index].id
 
-		console.log(index)
+		if (draggedID === id) return
+		console.log(index, above)
+
+		todoDispatch({
+			type: above ? TodoEnum.MOVE_ABOVE : TodoEnum.MOVE_BELOW,
+			from: draggedID,
+			to: id,
+		})
+		setDraggedID(-1)
 	}
 
 	const dragEnd: React.MouseEventHandler<HTMLUListElement> = e => {
@@ -160,6 +176,7 @@ function Uppgift35() {
 							key={item.id}
 							item={item}
 							todoDispatch={todoDispatch}
+							draged={draggedID === item.id}
 						/>
 					))}
 				</ul>

@@ -10,8 +10,6 @@ function getTimeGap(time: Date): number {
 	const minute = second * 60
 	const hour = minute * 60
 
-	console.log("time")
-
 	if (delta / minute < 1) return second
 	if (delta / hour < 1) return minute
 	return hour
@@ -66,9 +64,11 @@ function getTimeStr(time: Date): string {
 const TodoItem = memo(function ({
 	item,
 	todoDispatch,
+	draged = false,
 }: {
 	item: TodoEntry
 	todoDispatch: Dispatch<TodoAction>
+	draged: boolean
 }) {
 	const [timeText, setTimeText] = useState(getTimeStr(item.time))
 	useEffect(() => {
@@ -79,7 +79,7 @@ const TodoItem = memo(function ({
 	})
 
 	return (
-		<li className="todo-item">
+		<li className={draged ? "draging todo-item" : "todo-item"}>
 			<input
 				className="text"
 				type="text"
