@@ -1,5 +1,5 @@
 import { useState, useEffect, useReducer, useRef } from "react"
-import { todoReducer, TodoEnum, TodoState } from "./todoReducer"
+import { todoReducer, TodoEntry, TodoEnum, TodoState } from "./todoReducer"
 
 import TodoItem from "./todoItem"
 import "./index.scss"
@@ -35,7 +35,11 @@ function Uppgift35() {
 	const [todo, todoDispatch] = useReducer(todoReducer, init)
 
 	const [filter, setFilter] = useState("")
-	const [filteredList, setFilteredList] = useState(todo.list)
+
+	const [filteredList, setFilteredList] = useState(init.list)
+	const [sortedFilteredList, setSortedFilteredList] = useState<
+		Array<{ pos: number; item: TodoEntry }>
+	>([])
 	const [filterText, setFilterText] = useState(`${todo.list.length} Items`)
 
 	const [addText, setAddText] = useState("")
@@ -97,15 +101,15 @@ function Uppgift35() {
 			"giu"
 		)
 
-		setFilteredList(
-			todo.list.filter(
-				e =>
-					pattern.test(e.text) ||
-					pattern.test(e.tag) ||
-					pattern.test(e.time.toString().substring(0, 24))
-			)
+		const list = todo.list.filter(
+			e =>
+				pattern.test(e.text) ||
+				pattern.test(e.tag) ||
+				pattern.test(e.time.toString().substring(0, 24))
 		)
-	}, [todo, filter])
+
+		setFilteredList(list)
+	}, [todo.list, filter])
 
 	useEffect(() => {
 		setFilterText(
@@ -114,6 +118,16 @@ function Uppgift35() {
 				: `${filteredList.length} Items`
 		)
 	}, [todo.list, filteredList])
+
+	useEffect(() => {
+		console.log(filteredList)
+		const list = [...filteredList]
+			.map((e, i) => ({ pos: i, item: e }))
+			.sort((a, b) => a.item.id - b.item.id)
+
+		console.log(list)
+		setSortedFilteredList(list)
+	}, [filteredList])
 
 	return (
 		<section id="Uppgift35">
@@ -166,15 +180,28 @@ function Uppgift35() {
 					onMouseLeave={dragEnd}
 					onMouseMove={dragMove}
 				>
-					{filteredList.map((item, index) => (
-						<TodoItem
-							key={item.id}
-							item={item}
-							todoDispatch={todoDispatch}
-							position={index}
-							draged={dragging && draggedID === item.id}
-						/>
-					))}
+					{
+						sortedFilteredList.map(({ pos, item }) => (
+							<TodoItem
+								key={item.id}
+								item={item}
+								todoDispatch={todoDispatch}
+								position={pos}
+								draged={dragging && draggedID === item.id}
+							/>
+						))
+						/*
+						filteredList.map((item, pos) => (
+							<TodoItem
+								key={item.id}
+								item={item}
+								todoDispatch={todoDispatch}
+								position={pos}
+								draged={dragging && draggedID === item.id}
+							/>
+						))
+						*/
+					}
 				</ul>
 
 				<form

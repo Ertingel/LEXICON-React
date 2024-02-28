@@ -177,7 +177,8 @@
 
 	#todo-list {
 		position: relative;
-		height: calc(var(--item-count) * 4em);
+		height: calc(var(--item-count) * 4.75em);
+		transition: height 0.15s ease-in-out;
 
 		display: flex;
 		flex-flow: column nowrap;
