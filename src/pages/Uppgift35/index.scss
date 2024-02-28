@@ -176,6 +176,9 @@
 	}
 
 	#todo-list {
+		position: relative;
+		height: calc(var(--item-count) * 4em);
+
 		display: flex;
 		flex-flow: column nowrap;
 		justify-content: flex-start;
@@ -184,7 +187,7 @@
 		list-style-type: none;
 	}
 
-	#todo-list.draging {
+	#todo-list.dragging {
 		user-select: none;
 	}
 

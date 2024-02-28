@@ -13,8 +13,7 @@ interface TodoState {
 }
 
 enum TodoEnum {
-	MOVE_ABOVE = "MOVE_ABOVE",
-	MOVE_BELOW = "MOVE_BELOW",
+	MOVE_BY_ID = "MOVE_BY_ID",
 	MOVE = "MOVE",
 	NEW = "NEW",
 	ADD = "ADD",
@@ -41,18 +40,13 @@ interface TodoAction {
 
 function todoReducer(state: TodoState, action: TodoAction): TodoState {
 	if (
-		(action.type === TodoEnum.MOVE_ABOVE ||
-			action.type === TodoEnum.MOVE_BELOW) &&
+		action.type === TodoEnum.MOVE_BY_ID &&
 		typeof action.from !== "undefined" &&
 		typeof action.to !== "undefined"
 	) {
 		action.type = TodoEnum.MOVE
 		action.from = state.list.findIndex(e => e.id === action.from)
-		action.to =
-			state.list.findIndex(e => e.id === action.to) + action.type ===
-			TodoEnum.MOVE
-				? -1
-				: 0
+		action.to = state.list.findIndex(e => e.id === action.to)
 	}
 
 	if (

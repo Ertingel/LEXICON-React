@@ -64,10 +64,12 @@ function getTimeStr(time: Date): string {
 const TodoItem = memo(function ({
 	item,
 	todoDispatch,
+	position,
 	draged = false,
 }: {
 	item: TodoEntry
 	todoDispatch: Dispatch<TodoAction>
+	position: number
 	draged: boolean
 }) {
 	const [timeText, setTimeText] = useState(getTimeStr(item.time))
@@ -79,7 +81,14 @@ const TodoItem = memo(function ({
 	})
 
 	return (
-		<li className={draged ? "draging todo-item" : "todo-item"}>
+		<li
+			className={draged ? "draging todo-item" : "todo-item"}
+			style={
+				{
+					"--item-position": position,
+				} as React.CSSProperties
+			}
+		>
 			<input
 				className="text"
 				type="text"

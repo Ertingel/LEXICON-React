@@ -1,3 +1,14 @@
+#Uppgift35 #todo-list .todo-item {
+	position: absolute;
+	top: calc(var(--item-position) * 4em);
+	left: 0;
+	right: 0;
+
+	transition:
+		top 0.15s ease-in-out,
+		transform 0.15s ease-in-out;
+}
+
 #Uppgift35 .todo-item {
 	margin-block: -0.3em;
 

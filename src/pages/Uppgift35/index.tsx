@@ -42,58 +42,48 @@ function Uppgift35() {
 	const [addTag, setAddTag] = useState("")
 
 	const listRef = useRef<HTMLOListElement>(null)
+	const [mouseDown, setMouseDown] = useState(false)
 	const [dragging, setDragging] = useState(false)
 	const [draggedID, setDraggedID] = useState(-1)
 
-	const dragStart: React.MouseEventHandler<HTMLUListElement> = e => {
-		if (!listRef.current) return
-		setDragging(true)
+	const getDragID = (e: React.MouseEvent<HTMLUListElement, MouseEvent>) => {
+		if (!listRef.current) return -1
 
 		const { y, height } = listRef.current.getBoundingClientRect()
-		const decIndex = Math.max(
-			((e.clientY - y) / height) * filteredList.length,
-			0
-		)
-		const index = Math.floor(decIndex)
-		setDraggedID(filteredList[index].id)
+		let index = ((e.clientY - y) / height) * filteredList.length
+		index = Math.max(index, 0)
+		index = Math.min(index, filteredList.length - 1)
+		index = Math.floor(index)
 
-		console.log(index)
+		return filteredList[index].id
+	}
+
+	const dragStart: React.MouseEventHandler<HTMLUListElement> = e => {
+		if (!listRef.current) return
+
+		setDraggedID(getDragID(e))
+		setMouseDown(true)
 	}
 
 	const dragMove: React.MouseEventHandler<HTMLUListElement> = e => {
-		if (!dragging) return
-		if (!listRef.current) return
+		if (!mouseDown || !listRef.current) return
 
-		const { y, height } = listRef.current.getBoundingClientRect()
-		const decIndex = Math.max(
-			((e.clientY - y) / height) * filteredList.length,
-			0
-		)
-		const above = decIndex % 1 < 0.5
-		const index = Math.floor(decIndex)
-		const id = filteredList[index].id
-
+		const id = getDragID(e)
 		if (draggedID === id) return
-		console.log(index, above)
+		setDragging(true)
 
 		todoDispatch({
-			type: above ? TodoEnum.MOVE_ABOVE : TodoEnum.MOVE_BELOW,
+			type: TodoEnum.MOVE_BY_ID,
 			from: draggedID,
 			to: id,
 		})
-		setDraggedID(-1)
 	}
 
 	const dragEnd: React.MouseEventHandler<HTMLUListElement> = e => {
+		dragMove(e)
 		setDragging(false)
-		if (!listRef.current) return
-
-		const { y, height } = listRef.current.getBoundingClientRect()
-		const index = Math.floor(
-			((e.clientY - y) / height) * filteredList.length
-		)
-
-		console.log(index)
+		setDraggedID(-1)
+		setMouseDown(false)
 	}
 
 	useEffect(() => {
@@ -134,7 +124,7 @@ function Uppgift35() {
 
 			<div id="background"></div>
 
-			<main id="todo">
+			<main id="todo" className={dragging ? "dragging" : ""}>
 				<h1>TODO</h1>
 
 				<div id="todo-filter">
@@ -166,17 +156,23 @@ function Uppgift35() {
 				<ul
 					ref={listRef}
 					id="todo-list"
+					style={
+						{
+							"--item-count": filteredList.length,
+						} as React.CSSProperties
+					}
 					onMouseDown={dragStart}
 					onMouseUp={dragEnd}
 					onMouseLeave={dragEnd}
 					onMouseMove={dragMove}
 				>
-					{filteredList.map(item => (
+					{filteredList.map((item, index) => (
 						<TodoItem
 							key={item.id}
 							item={item}
 							todoDispatch={todoDispatch}
-							draged={draggedID === item.id}
+							position={index}
+							draged={dragging && draggedID === item.id}
 						/>
 					))}
 				</ul>
