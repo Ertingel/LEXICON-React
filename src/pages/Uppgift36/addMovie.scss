@@ -1,0 +1,102 @@
+#Uppgift36 .add-movie {
+	padding: 1em;
+	border: 0.2em solid #000;
+	border-radius: 0.5em;
+
+	display: grid;
+	gap: 0.5em;
+	grid:
+		"TitleLabel Title Title Title" auto
+		"RatingLabel Rating Rating Rating" auto
+		"GenreLabel Genre Genre Genre" auto
+		"DescriptionLabel Description Description Description" auto
+		". Clear . Add" auto
+		/ auto 1fr 1fr 1fr;
+
+	& label {
+		margin-top: 0.45em;
+
+		font-weight: bold;
+		text-align: right;
+	}
+
+	& input,
+	& select,
+	& textarea {
+		padding: 0.25em;
+
+		background: none;
+		border: 0.2em solid #000;
+		border-radius: 0.5em;
+		outline: none;
+	}
+
+	& textarea {
+		min-height: 1.25em;
+		resize: vertical;
+	}
+
+	$areas: Title, Rating, Genre, Description, Clear, Add;
+
+	@each $area in $areas {
+		& label##{$area} {
+			grid-area: "#{$area}Label";
+		}
+
+		& ##{$area}:not(label) {
+			grid-area: $area;
+		}
+	}
+
+	/*********** Baseline, reset styles ***********/
+
+	input[type="range"] {
+		border: none;
+		-webkit-appearance: none;
+		appearance: none;
+		background: transparent;
+		cursor: pointer;
+	}
+
+	/* Removes default focus */
+	input[type="range"]:focus {
+		outline: none;
+	}
+
+	/******** Chrome, Safari, Opera and Edge Chromium styles ********/
+	/* slider track */
+	input[type="range"]::-webkit-slider-runnable-track {
+		background-color: #000;
+		border-radius: 0.2em;
+		height: 0.2em;
+	}
+
+	/* slider thumb */
+	input[type="range"]::-webkit-slider-thumb {
+		-webkit-appearance: none; /* Override default look */
+		appearance: none;
+		margin-top: -7.2px; /* Centers thumb on the track */
+		background-color: #fff;
+		border: 0.2em solid #000;
+		border-radius: 1em;
+		height: 1em;
+		width: 1em;
+	}
+
+	/*********** Firefox styles ***********/
+	/* slider track */
+	input[type="range"]::-moz-range-track {
+		background-color: #000;
+		border-radius: 0.2em;
+		height: 0.2em;
+	}
+
+	/* slider thumb */
+	input[type="range"]::-moz-range-thumb {
+		background-color: #fff;
+		border: 0.2em solid #000;
+		border-radius: 1em;
+		height: 1em;
+		width: 1em;
+	}
+}
