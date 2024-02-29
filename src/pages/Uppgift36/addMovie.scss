@@ -1,5 +1,7 @@
 #Uppgift36 .add-movie {
 	padding: 0.5em 1em 1em 1em;
+	width: 25em;
+
 	border: 0.2em solid #000;
 	border-radius: 0.5em;
 
@@ -61,6 +63,11 @@
 	& textarea {
 		min-height: 1.25em;
 		resize: vertical;
+	}
+
+	& #Min,
+	& #Max {
+		user-select: none;
 	}
 
 	& #Clear {

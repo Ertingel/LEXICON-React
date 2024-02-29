@@ -11,10 +11,12 @@ function AddMovie({ onAdd }: { onAdd?: (data: MovieData) => void }) {
 		"Horror",
 		"Mystery",
 		"Romance",
+		"Science Fiction",
 		"Thriller",
 		"Western",
 	]
 
+	const [nextID, setNextID] = useState(0)
 	const [title, setTitle] = useState("")
 	const [rating, setRating] = useState(3)
 	const [genre, setGenre] = useState("")
@@ -25,16 +27,24 @@ function AddMovie({ onAdd }: { onAdd?: (data: MovieData) => void }) {
 			className="add-movie"
 			onSubmit={e => {
 				e.preventDefault()
-				if (typeof onAdd !== "undefined")
+				if (typeof onAdd !== "undefined") {
 					onAdd({
+						id: nextID,
 						title,
 						rating,
 						genre,
 						description,
 					})
+					setNextID(nextID + 1)
+				}
+
+				setTitle("")
+				setRating(3)
+				setGenre("")
+				setDescription("")
 			}}
 		>
-			<h2 id="Head">Add Movie</h2>
+			<h1 id="Head">Add Movie</h1>
 
 			<label htmlFor="Title">Title:</label>
 			<input

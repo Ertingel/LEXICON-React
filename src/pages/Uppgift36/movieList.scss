@@ -1,0 +1,66 @@
+#Uppgift36 .movie-list {
+	display: flex;
+	flex-flow: column nowrap;
+	justify-content: center;
+	align-items: center;
+	gap: 1em;
+
+	list-style-type: none;
+
+	& button {
+		position: relative;
+		font-size: 1em;
+
+		background: none;
+		border: none;
+		outline: none;
+
+		text-align: left;
+		user-select: none;
+
+		transform: scale(1);
+		transition: transform 0.1s ease-in-out;
+
+		& .movie-card {
+			filter: blur(0);
+			transition: filter 0.1s ease-in-out;
+		}
+
+		& .remove {
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			padding: 0.2em 0.5em;
+
+			color: #d00;
+			background-color: #fff;
+			border: 0.18em solid #d00;
+			border-radius: 0.3em;
+			box-shadow: 0 0 0.5em #d00;
+
+			font-weight: bold;
+
+			transform: translate(-50%, -50%);
+
+			opacity: 0;
+			transition: opacity 0.1s ease-in-out;
+		}
+	}
+
+	& button:hover,
+	& button:focus {
+		transform: scale(1.05);
+
+		& .movie-card {
+			filter: blur(0.1em);
+		}
+
+		& .remove {
+			opacity: 1;
+		}
+	}
+
+	& button:active {
+		transform: scale(0.95);
+	}
+}

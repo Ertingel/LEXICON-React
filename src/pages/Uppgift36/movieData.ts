@@ -1,4 +1,5 @@
 interface MovieData {
+	id: number
 	title: string
 	rating: number
 	genre: string
