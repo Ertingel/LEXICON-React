@@ -55,7 +55,7 @@ function AddMovie({ onAdd }: { onAdd?: (data: MovieData) => void }) {
 				id="Rating"
 				min="1"
 				max="5"
-				step=".25"
+				step=".5"
 				value={rating}
 				onChange={e => setRating(Number(e.target.value))}
 				required
@@ -71,7 +71,7 @@ function AddMovie({ onAdd }: { onAdd?: (data: MovieData) => void }) {
 				onChange={e => setGenre(e.target.value)}
 				required
 			>
-				<option value="" disabled selected hidden>
+				<option value="" disabled hidden>
 					Add Genre
 				</option>
 				{genreOptions.map(genre => (

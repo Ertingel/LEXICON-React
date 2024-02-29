@@ -73,6 +73,25 @@
 		border-color: #0d0;
 	}
 
+	& #Clear,
+	& #Add {
+		transform: scale(1);
+
+		transition: transform 0.1s ease-in-out;
+	}
+
+	& #Clear:hover,
+	& #Clear:focus,
+	& #Add:hover,
+	& #Add:focus {
+		transform: scale(1.1);
+	}
+
+	& #Clear:active,
+	& #Add:active {
+		transform: scale(0.9);
+	}
+
 	$areas: Head, Title, Min, Rating, Max, Genre, Description, Clear, Add;
 
 	@each $area in $areas {
