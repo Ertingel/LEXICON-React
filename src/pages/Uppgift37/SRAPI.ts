@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react"
 
-interface Channel {
+interface ChannelData {
+	id: number
+	name: string
 	image: URL
 	imagetemplate: URL
 	color: string
@@ -13,7 +15,7 @@ interface Channel {
 }
 
 function GetChannels() {
-	const [data, setData] = useState<Channel[]>([])
+	const [data, setData] = useState<ChannelData[]>([])
 
 	useEffect(() => {
 		const getEL = (element: Element, qualifiedName: string) =>
@@ -30,7 +32,10 @@ function GetChannels() {
 						const liveaudio =
 							channel.getElementsByTagName("liveaudio")[0]
 
-						const data: Channel = {
+						const data: ChannelData = {
+							id: Number(channel.id),
+							name:
+								channel.getAttribute("name") ?? "MISSING_NAME",
 							image: new URL(getEL(channel, "image")),
 							imagetemplate: new URL(
 								getEL(channel, "imagetemplate")
@@ -48,15 +53,16 @@ function GetChannels() {
 							xmltvid: getEL(channel, "xmltvid"),
 						}
 
+						//console.log(data)
+
 						return data
 					})
 				)
-				console.log(data)
 			})
 	}, [])
 
 	return data
 }
 
-export type { Channel }
+export type { ChannelData }
 export { GetChannels }

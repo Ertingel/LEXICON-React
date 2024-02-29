@@ -6,13 +6,16 @@ function ChannelList() {
 	const channels = GetChannels()
 
 	return (
-		<ul>
-			{channels.map(channel => (
-				<li key={channel.channeltype}>
-					<Channel data={channel} />
-				</li>
-			))}
-		</ul>
+		<section className="channel-list">
+			<h1>Kanaler</h1>
+			<ul>
+				{channels.map(channel => (
+					<li key={channel.id}>
+						<Channel data={channel} />
+					</li>
+				))}
+			</ul>
+		</section>
 	)
 }
 export default ChannelList

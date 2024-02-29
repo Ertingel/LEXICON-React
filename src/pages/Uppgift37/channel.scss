@@ -1,0 +1,13 @@
+#Uppgift37 .channel {
+	width: 100%;
+
+	display: flex;
+	flex-flow: column nowrap;
+
+	& img {
+		width: 100%;
+		display: block;
+		user-select: none;
+		pointer-events: none;
+	}
+}

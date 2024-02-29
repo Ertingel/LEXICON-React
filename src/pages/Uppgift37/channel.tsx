@@ -6,7 +6,7 @@ function BaseChannel({ data }: { data: ChannelData }) {
 	return (
 		<article className="channel">
 			<img src={data.image.href} alt="" />
-			<h1>{data.channeltype}</h1>
+			<h1>{data.name}</h1>
 			<p>{data.tagline}</p>
 		</article>
 	)
