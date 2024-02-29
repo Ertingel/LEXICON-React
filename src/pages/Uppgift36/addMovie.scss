@@ -1,20 +1,32 @@
 #Uppgift36 .add-movie {
-	padding: 1em;
+	padding: 0.5em 1em 1em 1em;
 	border: 0.2em solid #000;
 	border-radius: 0.5em;
 
 	display: grid;
-	gap: 0.5em;
+	gap: 0.5em 0;
 	grid:
-		"TitleLabel Title Title Title" auto
-		"RatingLabel Rating Rating Rating" auto
-		"GenreLabel Genre Genre Genre" auto
-		"DescriptionLabel Description Description Description" auto
-		". Clear . Add" auto
-		/ auto 1fr 1fr 1fr;
+		"Head Head Head Head Head Head" auto
+		"TitleLabel Title Title Title Title Title" auto
+		"RatingLabel Min Rating Rating Rating Max" auto
+		"GenreLabel Genre Genre Genre Genre Genre" auto
+		"DescriptionLabel Description Description Description Description Description" auto
+		". Clear Clear . Add Add" auto
+		/ auto auto 1fr 1fr 1fr auto;
+
+	& p {
+		align-self: center;
+
+		font-weight: bold;
+		text-align: center;
+	}
 
 	& label {
 		margin-top: 0.45em;
+		margin-right: 0.5em;
+
+		align-self: start;
+		justify-self: end;
 
 		font-weight: bold;
 		text-align: right;
@@ -31,12 +43,37 @@
 		outline: none;
 	}
 
+	& input::placeholder,
+	& select > option:disabled,
+	& select.placeholder {
+		color: #888;
+		font-style: italic;
+	}
+
+	& input[type="range"] {
+		margin-block: 0.2em;
+	}
+
+	& #Head {
+		text-align: center;
+	}
+
 	& textarea {
 		min-height: 1.25em;
 		resize: vertical;
 	}
 
-	$areas: Title, Rating, Genre, Description, Clear, Add;
+	& #Clear {
+		color: #d00;
+		border-color: #d00;
+	}
+
+	& #Add {
+		color: #0d0;
+		border-color: #0d0;
+	}
+
+	$areas: Head, Title, Min, Rating, Max, Genre, Description, Clear, Add;
 
 	@each $area in $areas {
 		& label##{$area} {
@@ -75,7 +112,7 @@
 	input[type="range"]::-webkit-slider-thumb {
 		-webkit-appearance: none; /* Override default look */
 		appearance: none;
-		margin-top: -7.2px; /* Centers thumb on the track */
+		margin-top: -0.4em; /* Centers thumb on the track */
 		background-color: #fff;
 		border: 0.2em solid #000;
 		border-radius: 1em;
