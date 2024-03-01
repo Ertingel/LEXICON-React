@@ -5,7 +5,7 @@ import "./channel.scss"
 function BaseChannel({ data }: { data: ChannelData }) {
 	return (
 		<article className="channel">
-			<img src={data.image.href} alt="" />
+			<img src={data.image} alt="" />
 			<h1>{data.name}</h1>
 			<p>{data.tagline}</p>
 		</article>
