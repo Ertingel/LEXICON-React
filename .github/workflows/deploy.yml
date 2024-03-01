@@ -41,8 +41,6 @@ jobs:
               run: npm install
             - name: Build
               run: npm run build
-            - name: List dir
-              run: dir
             - name: Copy index.html to 404.html
               run: cp index.html 404.html
             - name: Setup Pages
