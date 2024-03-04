@@ -3,18 +3,23 @@ import Channel from "./channel.tsx"
 import "./channelList.scss"
 
 function ChannelList() {
-	const channels = GetChannels()
+	const channelsPage = GetChannels({
+		size: 12,
+	})
 
 	return (
 		<section className="channel-list">
-			<h1>Kanaler</h1>
+			<h1>{channelsPage.totalhits} Kanaler</h1>
 			<ul>
-				{channels.map(channel => (
+				{channelsPage.channels.map(channel => (
 					<li key={channel.id}>
 						<Channel data={channel} />
 					</li>
 				))}
 			</ul>
+			<p>
+				{channelsPage.page}/{channelsPage.totalpages}
+			</p>
 		</section>
 	)
 }
