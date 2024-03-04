@@ -1,11 +1,14 @@
 #Uppgift37 {
 	padding: 1em;
+	min-height: 100vh;
+	box-sizing: border-box;
 
 	color: #fff;
 	background-color: #222;
 
 	display: flex;
 	flex-flow: column nowrap;
+	align-items: center;
 
 	* {
 		margin: 0;

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, Dispatch, SetStateAction } from "react"
 
 interface GetChannelsParams {
 	audioquality?: string
@@ -34,7 +34,11 @@ interface ChannelPageData {
 	totalpages: number
 }
 
-function GetChannels(params: GetChannelsParams = {}) {
+function GetChannels(
+	params: GetChannelsParams = {}
+): [ChannelPageData, Dispatch<SetStateAction<GetChannelsParams>>] {
+	const [params2, setParams] = useState<GetChannelsParams>(params)
+
 	const [data, setData] = useState<ChannelPageData>({
 		channels: [],
 		page: 0,
@@ -43,7 +47,7 @@ function GetChannels(params: GetChannelsParams = {}) {
 	})
 
 	useEffect(() => {
-		const querry = Object.entries(params).reduce(
+		const querry = Object.entries(params2).reduce(
 			(acc, [key, value]) => acc + `&${key}=${value}`,
 			"https://api.sr.se/api/v2/channels?format=JSON"
 		)
@@ -60,9 +64,9 @@ function GetChannels(params: GetChannelsParams = {}) {
 					totalpages: res.pagination.totalpages,
 				})
 			})
-	}, [])
+	}, [params2])
 
-	return data
+	return [data, setParams]
 }
 
 export type { GetChannelsParams, ChannelData, ChannelPageData }
