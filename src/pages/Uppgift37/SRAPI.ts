@@ -1,22 +1,27 @@
 import { useState, useEffect, Dispatch, SetStateAction } from "react"
 
-interface GetChannelsParams {
+interface GetPagnatedData {
+	page?: number
+	pagination?: boolean
+	size?: number
+}
+interface GetChannelsParams extends GetPagnatedData {
 	audioquality?: string
 	callback?: string
 	filter?: string
 	filtervalue?: string
 	liveaudiotemplateid?: string
 	ondemandaudiotemplateid?: string
-	page?: number
-	pagination?: boolean
-	size?: number
 	sort?: string
 }
 
-interface ChannelData {
+interface HasID {
+	id: number
+}
+
+interface ChannelData extends HasID {
 	channeltype: string
 	color: string
-	id: number
 	image: string
 	imagetemplate: string
 	liveaudio: { id: number; url: string; statkey: string }
@@ -27,8 +32,8 @@ interface ChannelData {
 	xmltvid: string
 }
 
-interface ChannelPageData {
-	channels: ChannelData[]
+interface PagnatedData<T> {
+	list: T[]
 	page: number
 	totalhits: number
 	totalpages: number
@@ -36,11 +41,11 @@ interface ChannelPageData {
 
 function GetChannels(
 	params: GetChannelsParams = {}
-): [ChannelPageData, Dispatch<SetStateAction<GetChannelsParams>>] {
+): [PagnatedData<ChannelData>, Dispatch<SetStateAction<GetChannelsParams>>] {
 	const [params2, setParams] = useState<GetChannelsParams>(params)
 
-	const [data, setData] = useState<ChannelPageData>({
-		channels: [],
+	const [data, setData] = useState<PagnatedData<ChannelData>>({
+		list: [],
 		page: 0,
 		totalhits: 0,
 		totalpages: 0,
@@ -58,7 +63,7 @@ function GetChannels(
 				console.log(querry)
 				console.log(res)
 				setData({
-					channels: res.channels,
+					list: res.channels,
 					page: res.pagination.page,
 					totalhits: res.pagination.totalhits,
 					totalpages: res.pagination.totalpages,
@@ -69,5 +74,11 @@ function GetChannels(
 	return [data, setParams]
 }
 
-export type { GetChannelsParams, ChannelData, ChannelPageData }
+export type {
+	GetPagnatedData,
+	GetChannelsParams,
+	HasID,
+	ChannelData,
+	PagnatedData,
+}
 export { GetChannels }

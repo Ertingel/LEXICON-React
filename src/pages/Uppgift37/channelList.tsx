@@ -27,7 +27,7 @@ function ChannelList() {
 				←
 			</button>
 			<ul>
-				{channelsPage.channels.map(channel => (
+				{channelsPage.list.map(channel => (
 					<li key={channel.id}>
 						<Channel data={channel} />
 					</li>
