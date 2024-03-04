@@ -7,8 +7,8 @@ function Pagnator<T extends HasID, U extends GetPagnatedData>({
 	componentBuilder,
 	params,
 }: {
-	fetchFunction: (data: U) => PagnatedData<T>
-	componentBuilder: ({ data }: { data: T }) => JSX.Element
+	fetchFunction: (data: U) => Promise<PagnatedData<T>>
+	componentBuilder: (data: T) => JSX.Element
 	params: U
 }) {
 	const [page, setPage] = useState(1)
@@ -16,8 +16,8 @@ function Pagnator<T extends HasID, U extends GetPagnatedData>({
 
 	const observerTarget = useRef(null)
 
-	const loadNextPage = useCallback(() => {
-		const data = fetchFunction({
+	const loadNextPage = useCallback(async () => {
+		const data = await fetchFunction({
 			...params,
 			page: page + 1,
 		})
@@ -30,12 +30,11 @@ function Pagnator<T extends HasID, U extends GetPagnatedData>({
 
 	useEffect(() => {
 		const observer = new IntersectionObserver(
-			function (entries) {
-				if (entries[0].isIntersecting) {
-					if (!loadNextPage())
+			async function (entries) {
+				if (entries[0].isIntersecting)
+					if (!(await loadNextPage()))
 						if (observerTarget.current)
 							observer.unobserve(observerTarget.current)
-				}
 			},
 			{ threshold: 1 }
 		)
@@ -49,13 +48,13 @@ function Pagnator<T extends HasID, U extends GetPagnatedData>({
 	}, [loadNextPage, observerTarget])
 
 	useEffect(() => {
-		setList(fetchFunction(1).list)
-	}, [setList, fetchFunction])
+		loadNextPage()
+	}, [loadNextPage])
 
 	return (
 		<ul>
 			{list.map(data => (
-				<li key={data.id}>{componentBuilder({ data })}</li>
+				<li key={data.id}>{componentBuilder(data)}</li>
 			))}
 		</ul>
 	)

@@ -5,6 +5,7 @@ interface GetPagnatedData {
 	pagination?: boolean
 	size?: number
 }
+
 interface GetChannelsParams extends GetPagnatedData {
 	audioquality?: string
 	callback?: string
@@ -74,6 +75,27 @@ function GetChannels(
 	return [data, setParams]
 }
 
+async function GetChannels2(params: GetChannelsParams = {}) {
+	const querry = Object.entries(params).reduce(
+		(acc, [key, value]) => acc + `&${key}=${value}`,
+		"https://api.sr.se/api/v2/channels?format=JSON"
+	)
+
+	return await fetch(querry)
+		.then(async res => await res.json())
+		.then(res => {
+			console.log(querry)
+			console.log(res)
+
+			return {
+				list: res.channels,
+				page: res.pagination.page,
+				totalhits: res.pagination.totalhits,
+				totalpages: res.pagination.totalpages,
+			}
+		})
+}
+
 export type {
 	GetPagnatedData,
 	GetChannelsParams,
@@ -81,4 +103,4 @@ export type {
 	ChannelData,
 	PagnatedData,
 }
-export { GetChannels }
+export { GetChannels, GetChannels2 }

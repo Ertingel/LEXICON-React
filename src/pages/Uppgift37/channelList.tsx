@@ -1,6 +1,15 @@
 import { useEffect, useState } from "react"
-import { GetChannels } from "./SRAPI"
+import {
+	GetChannels,
+	GetChannels2,
+	GetPagnatedData,
+	HasID,
+	PagnatedData,
+	ChannelData,
+	GetChannelsParams,
+} from "./SRAPI"
 import Channel from "./channel.tsx"
+import Pagnator from "./Pagnator.tsx"
 import "./channelList.scss"
 
 function ChannelList() {
@@ -26,13 +35,21 @@ function ChannelList() {
 			>
 				←
 			</button>
-			<ul>
+
+			{/* <Pagnator<ChannelData, GetChannelsParams>
+				fetchFunction={GetChannels2}
+				componentBuilder={data => <Channel data={data} />}
+				params={{}}
+			></Pagnator> */}
+
+			{/* <ul>
 				{channelsPage.list.map(channel => (
 					<li key={channel.id}>
 						<Channel data={channel} />
 					</li>
 				))}
-			</ul>
+			</ul> */}
+
 			<button
 				className="next"
 				onClick={() =>
