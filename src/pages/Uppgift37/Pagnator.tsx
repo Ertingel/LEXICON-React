@@ -63,6 +63,8 @@ function Pagnator<T extends HasID, U extends GetPagnatedData>({
 	const observerTarget = useRef(null)
 
 	useEffect(() => {
+		const refVal = observerTarget.current
+
 		const observer = new IntersectionObserver(
 			async function (entries) {
 				if (entries[0].isIntersecting)
@@ -71,25 +73,21 @@ function Pagnator<T extends HasID, U extends GetPagnatedData>({
 						page: page.page + 1,
 					}).then(data => {
 						pageDispatch({
-							type: PageReduceEnum.NEW,
+							type: PageReduceEnum.ADD,
 							data,
 						})
 
-						if (
-							data.page >= data.totalpages &&
-							observerTarget.current
-						)
-							observer.unobserve(observerTarget.current)
+						if (data.page >= data.totalpages && refVal)
+							observer.unobserve(refVal)
 					})
 			},
 			{ threshold: 1 }
 		)
 
-		if (observerTarget.current) observer.observe(observerTarget.current)
+		if (refVal) observer.observe(refVal)
 
 		return () => {
-			if (observerTarget.current)
-				observer.unobserve(observerTarget.current)
+			if (refVal) observer.unobserve(refVal)
 		}
 	}, [observerTarget, fetchFunction, page.page, params])
 
@@ -106,11 +104,13 @@ function Pagnator<T extends HasID, U extends GetPagnatedData>({
 	}, [pageDispatch, fetchFunction, params])
 
 	return (
-		<ul>
-			{page.list.map(data => (
-				<li key={data.id}>{componentBuilder(data)}</li>
+		<ul className="pagnator">
+			{page.list.map((data, index) => (
+				<li key={index}>{componentBuilder(data)}</li>
 			))}
-			<li ref={observerTarget}></li>
+			{page.page < page.totalpages ? (
+				<li ref={observerTarget} className="loading"></li>
+			) : undefined}
 		</ul>
 	)
 }

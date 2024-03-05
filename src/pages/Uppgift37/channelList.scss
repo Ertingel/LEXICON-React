@@ -2,31 +2,9 @@
 	padding: 1em;
 	background-color: #333;
 
-	display: grid;
-	grid:
-		"previus head next" auto
-		"list list list" auto
-		"foot foot foot" auto
-		/ auto 1fr auto;
-
-	& > h1 {
-		grid-area: head;
+	& > h1,
+	& > p {
 		text-align: center;
-	}
-
-	& > button {
-		color: #fff;
-		background: none;
-		border: none;
-		outline: none;
-	}
-
-	& > previus {
-		grid-area: previus;
-	}
-
-	& > next {
-		grid-area: next;
 	}
 
 	& > ul {
@@ -49,10 +27,5 @@
 			justify-content: stretch;
 			align-items: stretch;
 		}
-	}
-
-	& > p {
-		grid-area: foot;
-		text-align: center;
 	}
 }
