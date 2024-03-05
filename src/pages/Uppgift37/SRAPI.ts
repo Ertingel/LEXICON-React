@@ -38,10 +38,10 @@ interface PagnatedData<T> {
 	totalpages: number
 }
 
-const SRAPI_MEMO: {
-	pages: Map<string, PagnatedData<ChannelData>>
+const MEMO: {
+	PAGES: Map<string, Promise<PagnatedData<ChannelData>>>
 } = {
-	pages: new Map(),
+	PAGES: new Map(),
 }
 
 function GetChannelsURL(params: GetChannelsParams) {
@@ -54,10 +54,10 @@ function GetChannelsURL(params: GetChannelsParams) {
 async function GetChannels(params: GetChannelsParams = {}) {
 	const querry = GetChannelsURL(params)
 
-	console.log(SRAPI_MEMO.pages.has(querry))
-	if (SRAPI_MEMO.pages.has(querry)) return SRAPI_MEMO.pages.get(querry)!
+	console.log(MEMO.PAGES.has(querry))
+	if (MEMO.PAGES.has(querry)) return await MEMO.PAGES.get(querry)!
 
-	return await fetch(querry)
+	const data = fetch(querry)
 		.then(async res => await res.json())
 		.then(res => {
 			console.log(querry)
@@ -70,9 +70,11 @@ async function GetChannels(params: GetChannelsParams = {}) {
 				totalpages: res.pagination.totalpages,
 			}
 
-			SRAPI_MEMO.pages.set(querry, data)
 			return data
 		})
+
+	MEMO.PAGES.set(querry, data)
+	return await data
 }
 
 export type {
