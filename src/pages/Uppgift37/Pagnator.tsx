@@ -1,6 +1,49 @@
-import { useEffect, useState, useCallback, useRef } from "react"
+import { useEffect, useReducer, useRef } from "react"
 import { GetPagnatedData, HasID, PagnatedData } from "./SRAPI"
 import "./channelList.scss"
+
+enum PageReduceEnum {
+	NEW = "NEW",
+	ADD = "ADD",
+}
+
+interface PageReduceAction<T> {
+	type: PageReduceEnum
+	data?: PagnatedData<T>
+}
+
+interface PageReduceState<T> {
+	list: T[]
+	page: number
+	totalpages: number
+}
+
+function PageReducer<T>(
+	state: PageReduceState<T>,
+	action: PageReduceAction<T>
+) {
+	if (
+		action.type === PageReduceEnum.NEW &&
+		typeof action.data !== "undefined"
+	)
+		return {
+			list: action.data.list,
+			page: action.data.page,
+			totalpages: action.data.totalpages,
+		}
+
+	if (
+		action.type === PageReduceEnum.ADD &&
+		typeof action.data !== "undefined"
+	)
+		return {
+			list: [...state.list, ...action.data.list],
+			page: action.data.page,
+			totalpages: action.data.totalpages,
+		}
+
+	throw Error("Unknown action: " + action.type)
+}
 
 function Pagnator<T extends HasID, U extends GetPagnatedData>({
 	fetchFunction,
@@ -11,30 +54,33 @@ function Pagnator<T extends HasID, U extends GetPagnatedData>({
 	componentBuilder: (data: T) => JSX.Element
 	params: U
 }) {
-	const [page, setPage] = useState(1)
-	const [list, setList] = useState<T[]>([])
+	const [page, pageDispatch] = useReducer(PageReducer<T>, {
+		list: [],
+		page: 0,
+		totalpages: 1,
+	})
 
 	const observerTarget = useRef(null)
-
-	const loadNextPage = useCallback(async () => {
-		const data = await fetchFunction({
-			...params,
-			page: page + 1,
-		})
-
-		setPage(page + 1)
-		setList([...list, ...data.list])
-
-		return data.page === data.totalpages
-	}, [fetchFunction, list, page, params])
 
 	useEffect(() => {
 		const observer = new IntersectionObserver(
 			async function (entries) {
 				if (entries[0].isIntersecting)
-					if (!(await loadNextPage()))
-						if (observerTarget.current)
+					fetchFunction({
+						...params,
+						page: page.page + 1,
+					}).then(data => {
+						pageDispatch({
+							type: PageReduceEnum.NEW,
+							data,
+						})
+
+						if (
+							data.page >= data.totalpages &&
+							observerTarget.current
+						)
 							observer.unobserve(observerTarget.current)
+					})
 			},
 			{ threshold: 1 }
 		)
@@ -45,17 +91,26 @@ function Pagnator<T extends HasID, U extends GetPagnatedData>({
 			if (observerTarget.current)
 				observer.unobserve(observerTarget.current)
 		}
-	}, [loadNextPage, observerTarget])
+	}, [observerTarget, fetchFunction, page.page, params])
 
 	useEffect(() => {
-		loadNextPage()
-	}, [loadNextPage])
+		fetchFunction({
+			...params,
+			page: 1,
+		}).then(data => {
+			pageDispatch({
+				type: PageReduceEnum.NEW,
+				data,
+			})
+		})
+	}, [pageDispatch, fetchFunction, params])
 
 	return (
 		<ul>
-			{list.map(data => (
+			{page.list.map(data => (
 				<li key={data.id}>{componentBuilder(data)}</li>
 			))}
+			<li ref={observerTarget}></li>
 		</ul>
 	)
 }

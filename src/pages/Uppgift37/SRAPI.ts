@@ -40,6 +40,12 @@ interface PagnatedData<T> {
 	totalpages: number
 }
 
+const SRAPI_MEMO: {
+	pages: Map<string, PagnatedData<ChannelData>>
+} = {
+	pages: new Map(),
+}
+
 function GetChannels(
 	params: GetChannelsParams = {}
 ): [PagnatedData<ChannelData>, Dispatch<SetStateAction<GetChannelsParams>>] {
@@ -57,29 +63,40 @@ function GetChannels(
 			(acc, [key, value]) => acc + `&${key}=${value}`,
 			"https://api.sr.se/api/v2/channels?format=JSON"
 		)
+		console.log(SRAPI_MEMO.pages)
+		if (querry in SRAPI_MEMO.pages) setData(SRAPI_MEMO.pages.get(querry)!)
 
 		fetch(querry)
 			.then(async res => await res.json())
 			.then(res => {
 				console.log(querry)
 				console.log(res)
-				setData({
+
+				const d = {
 					list: res.channels,
 					page: res.pagination.page,
 					totalhits: res.pagination.totalhits,
 					totalpages: res.pagination.totalpages,
-				})
+				}
+
+				SRAPI_MEMO.pages.set(querry, d)
+				setData(d)
 			})
 	}, [params2])
 
 	return [data, setParams]
 }
 
-async function GetChannels2(params: GetChannelsParams = {}) {
-	const querry = Object.entries(params).reduce(
+function GetChannelsURL(params: GetChannelsParams) {
+	return Object.entries(params).reduce(
 		(acc, [key, value]) => acc + `&${key}=${value}`,
 		"https://api.sr.se/api/v2/channels?format=JSON"
 	)
+}
+
+async function GetChannels2(params: GetChannelsParams = {}) {
+	const querry = GetChannelsURL(params)
+	if (querry in SRAPI_MEMO.pages) return SRAPI_MEMO.pages.get(querry)
 
 	return await fetch(querry)
 		.then(async res => await res.json())
@@ -87,12 +104,15 @@ async function GetChannels2(params: GetChannelsParams = {}) {
 			console.log(querry)
 			console.log(res)
 
-			return {
+			const data = {
 				list: res.channels,
 				page: res.pagination.page,
 				totalhits: res.pagination.totalhits,
 				totalpages: res.pagination.totalpages,
 			}
+
+			SRAPI_MEMO.pages.set(querry, data)
+			return data
 		})
 }
 
@@ -103,4 +123,4 @@ export type {
 	ChannelData,
 	PagnatedData,
 }
-export { GetChannels, GetChannels2 }
+export { GetChannelsURL, GetChannels, GetChannels2 }
