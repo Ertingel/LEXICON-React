@@ -1,12 +1,25 @@
-#Uppgift37 .card {
+#Uppgift37 .card > a {
 	width: 100%;
 
+	color: #fff;
 	background-color: #333;
+	border-radius: 0.5em;
+
+	text-decoration: none;
+	overflow: hidden;
 
 	display: flex;
 	flex-flow: column nowrap;
 	align-items: stretch;
 	justify-content: stretch;
+
+	transform: scale(1);
+	transition: transform 0.1s ease-in-out;
+	user-select: none;
+
+	&:hover {
+		transform: scale(1.07);
+	}
 
 	& > img {
 		grid-area: image;

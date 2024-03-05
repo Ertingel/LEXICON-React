@@ -1,9 +1,11 @@
 const MEMO: {
-	PAGES: Map<string, Promise<PagnatedData<Channel>>>
-	PROGRAMS: Map<string, Promise<PagnatedData<Program>>>
+	CHANNELS_PAGES: Map<string, Promise<PagnatedData<Channel>>>
+	CHANNELS: Map<string, Promise<Channel>>
+	PROGRAMS_PAGES: Map<string, Promise<PagnatedData<Program>>>
 } = {
-	PAGES: new Map(),
-	PROGRAMS: new Map(),
+	CHANNELS_PAGES: new Map(),
+	CHANNELS: new Map(),
+	PROGRAMS_PAGES: new Map(),
 }
 
 interface GetPagnatedData {
@@ -16,7 +18,7 @@ interface PagnatedData<T> {
 	list: T[]
 	page: number
 	totalhits: number
-	totalpages: number
+	totalCHANNEL_pages: number
 }
 
 interface GetChannelsParams extends GetPagnatedData {
@@ -43,37 +45,56 @@ interface Channel {
 	xmltvid: string
 }
 
-function GetChannelsURL(params: GetChannelsParams) {
+function GetChannelURL(id: number) {
+	return `https://api.sr.se/api/v2/channels${id ? "/" + id : ""}?format=JSON`
+}
+
+function GetChannelsPageURL(params: GetChannelsParams) {
 	return Object.entries(params).reduce(
 		(acc, [key, value]) => acc + `&${key}=${value}`,
 		"https://api.sr.se/api/v2/channels?format=JSON"
 	)
 }
 
-async function GetChannels(
+async function GetChannel(id: number): Promise<Channel> {
+	const querry = GetChannelURL(id)
+
+	if (MEMO.CHANNELS.has(querry)) return await MEMO.CHANNELS.get(querry)!
+
+	const data = fetch(querry)
+		.then(async res => await res.json())
+		.then(res => res.channel)
+
+	MEMO.CHANNELS.set(querry, data)
+	return await data
+}
+
+async function GetChannelsPage(
 	params: GetChannelsParams = {}
 ): Promise<PagnatedData<Channel>> {
-	const querry = GetChannelsURL(params)
+	const querry = GetChannelsPageURL(params)
 
-	if (MEMO.PAGES.has(querry)) return await MEMO.PAGES.get(querry)!
+	if (MEMO.CHANNELS_PAGES.has(querry))
+		return await MEMO.CHANNELS_PAGES.get(querry)!
 
 	const data = fetch(querry)
 		.then(async res => await res.json())
 		.then(res => {
-			//console.log(querry)
-			//console.log(res)
+			/*
+			res.channels.forEach((channel:Channel) => {
+				MEMO.CHANNELS.set(GetChannelURL(channel.id), channel)
+			});
+			*/
 
-			const data = {
+			return {
 				list: res.channels,
 				page: res.pagination.page,
 				totalhits: res.pagination.totalhits,
-				totalpages: res.pagination.totalpages,
+				totalCHANNEL_pages: res.pagination.totalCHANNEL_pages,
 			}
-
-			return data
 		})
 
-	MEMO.PAGES.set(querry, data)
+	MEMO.CHANNELS_PAGES.set(querry, data)
 	return await data
 }
 
@@ -124,25 +145,19 @@ async function GetPrograms(
 ): Promise<PagnatedData<Program>> {
 	const querry = GetProgramsURL(params)
 
-	if (MEMO.PROGRAMS.has(querry)) return await MEMO.PROGRAMS.get(querry)!
+	if (MEMO.PROGRAMS_PAGES.has(querry))
+		return await MEMO.PROGRAMS_PAGES.get(querry)!
 
 	const data = fetch(querry)
 		.then(async res => await res.json())
-		.then(res => {
-			//console.log(querry)
-			//console.log(res)
+		.then(res => ({
+			list: res.programs,
+			page: res.pagination.page,
+			totalhits: res.pagination.totalhits,
+			totalCHANNEL_pages: res.pagination.totalCHANNEL_pages,
+		}))
 
-			const data = {
-				list: res.programs,
-				page: res.pagination.page,
-				totalhits: res.pagination.totalhits,
-				totalpages: res.pagination.totalpages,
-			}
-
-			return data
-		})
-
-	MEMO.PROGRAMS.set(querry, data)
+	MEMO.PROGRAMS_PAGES.set(querry, data)
 	return await data
 }
 
@@ -154,4 +169,11 @@ export type {
 	GetProgramsParams,
 	Program,
 }
-export { GetChannelsURL, GetChannels, GetProgramsURL, GetPrograms }
+export {
+	GetChannelURL,
+	GetChannelsPageURL,
+	GetChannelsPage,
+	GetChannel,
+	GetProgramsURL,
+	GetPrograms,
+}

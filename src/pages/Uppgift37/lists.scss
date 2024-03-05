@@ -1,5 +1,5 @@
 #Uppgift37 .list {
-	max-width: 60em;
+	max-width: 64em;
 
 	& > h1 {
 		padding: 0.5em;
@@ -12,8 +12,8 @@
 		display: grid;
 		justify-content: stretch;
 		align-items: stretch;
-		gap: 1em;
-		grid-template-columns: repeat(auto-fit, minmax(15em, 1fr));
+		gap: 1.5em;
+		grid-template-columns: repeat(auto-fit, minmax(15em, auto));
 		grid-auto-rows: 1fr;
 
 		list-style-type: none;

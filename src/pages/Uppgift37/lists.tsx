@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import {
-	GetChannels,
+	GetChannelsPage,
 	Channel,
 	GetChannelsParams,
 	GetPrograms,
@@ -20,7 +20,7 @@ function ChannelList() {
 	const [count, setCount] = useState(0)
 
 	useEffect(() => {
-		GetChannels(params).then(data => {
+		GetChannelsPage(params).then(data => {
 			setCount(data.totalhits)
 		})
 	}, [setCount])
@@ -30,9 +30,13 @@ function ChannelList() {
 			<h1>{count} Kanaler</h1>
 
 			<Pagnator<Channel, GetChannelsParams>
-				fetchFunction={GetChannels}
+				fetchFunction={GetChannelsPage}
 				ComponentBuilder={data => (
-					<ChannelCard image={data.image} title={data.name}>
+					<ChannelCard
+						image={data.image}
+						title={data.name}
+						link={`/Uppgift37/kanal/${data.id}`}
+					>
 						<p>{data.tagline}</p>
 					</ChannelCard>
 				)}
@@ -58,7 +62,11 @@ function ProgramList() {
 			<Pagnator<Program, GetProgramsParams>
 				fetchFunction={GetPrograms}
 				ComponentBuilder={data => (
-					<ChannelCard image={data.programimage} title={data.name}>
+					<ChannelCard
+						image={data.programimage}
+						title={data.name}
+						link={`Uppgift37/program/${data.id}`}
+					>
 						<p>{data.description}</p>
 					</ChannelCard>
 				)}
@@ -66,32 +74,6 @@ function ProgramList() {
 			></Pagnator>
 		</section>
 	)
-
-	/*
-	const [count, setCount] = useState(0)
-
-	useEffect(() => {
-		GetChannels(params).then(data => {
-			setCount(data.totalhits)
-		})
-	}, [setCount])
-
-	return (
-		<section className="list">
-			<h1>{count} Kanaler</h1>
-
-			<Pagnator<Channel, GetChannelsParams>
-				fetchFunction={GetChannels}
-				ComponentBuilder={data => (
-					<ChannelCard image={data.image} title={data.name}>
-						<p>{data.tagline}</p>
-					</ChannelCard>
-				)}
-				params={params}
-			></Pagnator>
-		</section>
-	)
-	*/
 }
 
 export { ChannelList, ProgramList }
