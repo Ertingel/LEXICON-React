@@ -1,17 +1,13 @@
-#Uppgift37 .channel-list {
-	padding: 1em;
-	background-color: #333;
+#Uppgift37 .list {
+	max-width: 70em;
 
-	& > h1,
-	& > p {
+	& > h1 {
+		padding: 0.5em;
 		text-align: center;
 	}
 
 	& > ul {
 		grid-area: list;
-
-		padding: 1em;
-		max-width: 70em;
 
 		display: grid;
 		justify-content: stretch;

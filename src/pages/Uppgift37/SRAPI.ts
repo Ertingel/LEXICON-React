@@ -4,6 +4,13 @@ interface GetPagnatedData {
 	size?: number
 }
 
+interface PagnatedData<T> {
+	list: T[]
+	page: number
+	totalhits: number
+	totalpages: number
+}
+
 interface GetChannelsParams extends GetPagnatedData {
 	audioquality?: string
 	callback?: string
@@ -14,11 +21,8 @@ interface GetChannelsParams extends GetPagnatedData {
 	sort?: string
 }
 
-interface HasID {
+interface Channel {
 	id: number
-}
-
-interface ChannelData extends HasID {
 	channeltype: string
 	color: string
 	image: string
@@ -31,15 +35,8 @@ interface ChannelData extends HasID {
 	xmltvid: string
 }
 
-interface PagnatedData<T> {
-	list: T[]
-	page: number
-	totalhits: number
-	totalpages: number
-}
-
 const MEMO: {
-	PAGES: Map<string, Promise<PagnatedData<ChannelData>>>
+	PAGES: Map<string, Promise<PagnatedData<Channel>>>
 } = {
 	PAGES: new Map(),
 }
@@ -54,14 +51,13 @@ function GetChannelsURL(params: GetChannelsParams) {
 async function GetChannels(params: GetChannelsParams = {}) {
 	const querry = GetChannelsURL(params)
 
-	console.log(MEMO.PAGES.has(querry))
 	if (MEMO.PAGES.has(querry)) return await MEMO.PAGES.get(querry)!
 
 	const data = fetch(querry)
 		.then(async res => await res.json())
 		.then(res => {
-			console.log(querry)
-			console.log(res)
+			//console.log(querry)
+			//console.log(res)
 
 			const data = {
 				list: res.channels,
@@ -77,11 +73,5 @@ async function GetChannels(params: GetChannelsParams = {}) {
 	return await data
 }
 
-export type {
-	GetPagnatedData,
-	GetChannelsParams,
-	HasID,
-	ChannelData,
-	PagnatedData,
-}
+export type { GetPagnatedData, GetChannelsParams, Channel, PagnatedData }
 export { GetChannelsURL, GetChannels }

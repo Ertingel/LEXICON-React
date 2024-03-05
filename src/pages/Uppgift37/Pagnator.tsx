@@ -1,6 +1,5 @@
 import { useEffect, useReducer, useRef } from "react"
-import { GetPagnatedData, HasID, PagnatedData } from "./SRAPI"
-import "./channelList.scss"
+import { GetPagnatedData, PagnatedData } from "./SRAPI"
 
 enum PageReduceEnum {
 	NEW = "NEW",
@@ -45,13 +44,13 @@ function PageReducer<T>(
 	throw Error("Unknown action: " + action.type)
 }
 
-function Pagnator<T extends HasID, U extends GetPagnatedData>({
+function Pagnator<T, U extends GetPagnatedData>({
 	fetchFunction,
-	componentBuilder,
+	ComponentBuilder,
 	params,
 }: {
 	fetchFunction: (data: U) => Promise<PagnatedData<T>>
-	componentBuilder: (data: T) => JSX.Element
+	ComponentBuilder: (data: T) => JSX.Element
 	params: U
 }) {
 	const [page, pageDispatch] = useReducer(PageReducer<T>, {
@@ -81,7 +80,7 @@ function Pagnator<T extends HasID, U extends GetPagnatedData>({
 							observer.unobserve(refVal)
 					})
 			},
-			{ threshold: 1 }
+			{ threshold: 0.5 }
 		)
 
 		if (refVal) observer.observe(refVal)
@@ -106,7 +105,7 @@ function Pagnator<T extends HasID, U extends GetPagnatedData>({
 	return (
 		<ul className="pagnator">
 			{page.list.map((data, index) => (
-				<li key={index}>{componentBuilder(data)}</li>
+				<ComponentBuilder key={index} {...data} />
 			))}
 			{page.page < page.totalpages ? (
 				<li ref={observerTarget} className="loading"></li>

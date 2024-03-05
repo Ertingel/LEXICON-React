@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react"
-import { GetChannels, ChannelData, GetChannelsParams } from "./SRAPI"
-import Channel from "./channel.tsx"
+import { GetChannels, Channel, GetChannelsParams } from "./SRAPI.ts"
+import ChannelCard from "./card.tsx"
 import Pagnator from "./Pagnator.tsx"
-import "./channelList.scss"
+import "./lists.scss"
 
 const params = {
 	size: 12,
@@ -19,12 +19,16 @@ function ChannelList() {
 	}, [setCount])
 
 	return (
-		<section className="channel-list">
+		<section className="list">
 			<h1>{count} Kanaler</h1>
 
-			<Pagnator<ChannelData, GetChannelsParams>
+			<Pagnator<Channel, GetChannelsParams>
 				fetchFunction={GetChannels}
-				componentBuilder={data => <Channel data={data} />}
+				ComponentBuilder={data => (
+					<ChannelCard image={data.image} title={data.name}>
+						<p>{data.tagline}</p>
+					</ChannelCard>
+				)}
 				params={params}
 			></Pagnator>
 		</section>
