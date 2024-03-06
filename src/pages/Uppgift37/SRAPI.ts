@@ -18,7 +18,7 @@ interface PagnatedData<T> {
 	list: T[]
 	page: number
 	totalhits: number
-	totalCHANNEL_pages: number
+	totalpages: number
 }
 
 interface GetChannelsParams extends GetPagnatedData {
@@ -80,17 +80,16 @@ async function GetChannelsPage(
 	const data = fetch(querry)
 		.then(async res => await res.json())
 		.then(res => {
-			/*
-			res.channels.forEach((channel:Channel) => {
-				MEMO.CHANNELS.set(GetChannelURL(channel.id), channel)
-			});
-			*/
+			res.channels.forEach((channel: Channel) => {
+				const promise = async () => channel
+				MEMO.CHANNELS.set(GetChannelURL(channel.id), promise())
+			})
 
 			return {
 				list: res.channels,
 				page: res.pagination.page,
 				totalhits: res.pagination.totalhits,
-				totalCHANNEL_pages: res.pagination.totalCHANNEL_pages,
+				totalpages: res.pagination.totalpages,
 			}
 		})
 
@@ -154,7 +153,7 @@ async function GetPrograms(
 			list: res.programs,
 			page: res.pagination.page,
 			totalhits: res.pagination.totalhits,
-			totalCHANNEL_pages: res.pagination.totalCHANNEL_pages,
+			totalpages: res.pagination.totalpages,
 		}))
 
 	MEMO.PROGRAMS_PAGES.set(querry, data)

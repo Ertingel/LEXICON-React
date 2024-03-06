@@ -1,6 +1,6 @@
 import { Routes, Route } from "react-router-dom"
 import { ChannelList, ProgramList } from "./lists.tsx"
-import ChannelInfo from "./channelInfo.tsx"
+import { ChannelInfo } from "./info.tsx"
 import "./index.scss"
 
 function Uppgift37() {

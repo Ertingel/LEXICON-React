@@ -11,7 +11,7 @@ import ChannelCard from "./card.tsx"
 import Pagnator from "./Pagnator.tsx"
 import "./lists.scss"
 
-const params = {
+const PARAMS = {
 	size: 12,
 	page: 1,
 }
@@ -20,7 +20,7 @@ function ChannelList() {
 	const [count, setCount] = useState(0)
 
 	useEffect(() => {
-		GetChannelsPage(params).then(data => {
+		GetChannelsPage(PARAMS).then(data => {
 			setCount(data.totalhits)
 		})
 	}, [setCount])
@@ -40,20 +40,26 @@ function ChannelList() {
 						<p>{data.tagline}</p>
 					</ChannelCard>
 				)}
-				params={params}
+				params={PARAMS}
 			></Pagnator>
 		</section>
 	)
 }
 
-function ProgramList() {
+function ProgramList(
+	{ params }: { params?: GetProgramsParams } = { params: {} }
+) {
+	const [params2, setParams2] = useState(PARAMS)
 	const [count, setCount] = useState(0)
 
 	useEffect(() => {
-		GetPrograms(params).then(data => {
+		const params2 = { ...PARAMS, ...params }
+
+		setParams2(params2)
+		GetPrograms(params2).then(data => {
 			setCount(data.totalhits)
 		})
-	}, [setCount])
+	}, [setParams2, setCount, params])
 
 	return (
 		<section className="list">
@@ -65,12 +71,12 @@ function ProgramList() {
 					<ChannelCard
 						image={data.programimage}
 						title={data.name}
-						link={`Uppgift37/program/${data.id}`}
+						link={`/Uppgift37/program/${data.id}`}
 					>
 						<p>{data.description}</p>
 					</ChannelCard>
 				)}
-				params={params}
+				params={params2}
 			></Pagnator>
 		</section>
 	)
