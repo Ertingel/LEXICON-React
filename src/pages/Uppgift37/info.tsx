@@ -8,6 +8,7 @@ import {
 	getEpisode,
 	Episode,
 	UTCToTime,
+	getTimeStr,
 } from "./SRAPI"
 import { ProgramList, EpisodeList } from "./lists"
 import "./info.scss"
@@ -82,12 +83,14 @@ function ProgramInfo() {
 							</li>
 						) : undefined}
 
-						{data.phone ? (
-							<li>
-								<b>Tel</b>:{" "}
-								<a href={`tel:${data.phone}`}>{data.phone}</a>
-							</li>
-						) : undefined}
+						{data.socialmediaplatforms.map(
+							({ platform, platformurl }) => (
+								<li key={platform}>
+									<b>{platform}</b>:{" "}
+									<a href={platformurl}>{platformurl}</a>
+								</li>
+							)
+						)}
 
 						{data.email ? (
 							<li>
@@ -98,14 +101,12 @@ function ProgramInfo() {
 							</li>
 						) : undefined}
 
-						{data.socialmediaplatforms.map(
-							({ platform, platformurl }) => (
-								<li key={platform}>
-									<b>{platform}</b>:{" "}
-									<a href={platformurl}>{platformurl}</a>
-								</li>
-							)
-						)}
+						{data.phone ? (
+							<li>
+								<b>Tel</b>:{" "}
+								<a href={`tel:${data.phone}`}>{data.phone}</a>
+							</li>
+						) : undefined}
 					</ul>
 				</div>
 			</header>
@@ -143,16 +144,13 @@ function EpisodeInfo() {
 						</Link>
 						<span>
 							:{" "}
-							{UTCToTime(
-								data.broadcasttime.starttimeutc
-							).toLocaleDateString()}{" "}
-							{UTCToTime(
-								data.broadcasttime.starttimeutc
-							).toLocaleTimeString()}{" "}
+							{getTimeStr(
+								UTCToTime(data.broadcasttime.starttimeutc)
+							)}
 							{" - "}
-							{UTCToTime(
-								data.broadcasttime.endtimeutc
-							).toLocaleTimeString()}
+							{getTimeStr(
+								UTCToTime(data.broadcasttime.endtimeutc)
+							)}
 						</span>
 					</h2>
 					<p>{data.description}</p>

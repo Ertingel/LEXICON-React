@@ -18,6 +18,52 @@ const MEMO: {
 	EPISODES: new Map(),
 }
 
+function UTCToTime(utc: string) {
+	return new Date(Number(utc.substring(6, utc.length - 2)))
+}
+
+function getTimeStr(time: Date): string {
+	const now = new Date()
+	const delta = Math.abs(now.valueOf() - time.valueOf())
+
+	const second = 1000
+	const minute = second * 60
+	const hour = minute * 60
+	const day = hour * 24
+	const year = day * 365
+
+	const clock = `${String(time.getHours()).padStart(2, "0")}:${String(
+		time.getMinutes()
+	).padStart(2, "0")}`
+
+	if (delta / day < 1 && now.getDate() === time.getDate())
+		return `Idag ${clock}`
+
+	const month_name =
+		[
+			"Jan",
+			"Feb",
+			"Mar",
+			"Apr",
+			"Maj",
+			"Jun",
+			"Jul",
+			"Aug",
+			"Sep",
+			"Oct",
+			"Nov",
+			"Dec",
+		][time.getMonth()] +
+		" " +
+		time.getDate()
+
+	if (delta / year < 1) return `${month_name} ${clock}`
+
+	return `${time.getFullYear()}-${
+		time.getMonth() + 1
+	}-${time.getDate()} ${clock}`
+}
+
 interface PagnatedData<T> {
 	list: T[]
 	page: number
@@ -57,10 +103,6 @@ interface Channel {
 	siteurl: string
 	tagline: string
 	xmltvid: string
-}
-
-function UTCToTime(utc: string) {
-	return new Date(Number(utc.substring(6, utc.length - 2)))
 }
 
 function getChannelURL(id: number) {
@@ -316,6 +358,8 @@ export type {
 	GetEpisodesParams,
 }
 export {
+	UTCToTime,
+	getTimeStr,
 	getChannelURL,
 	getChannelsPageURL,
 	getChannel,
@@ -328,5 +372,4 @@ export {
 	getEpisodesURL,
 	getEpisode,
 	getEpisodes,
-	UTCToTime,
 }

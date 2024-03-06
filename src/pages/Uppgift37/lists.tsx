@@ -10,6 +10,7 @@ import {
 	GetEpisodesParams,
 	getEpisodes,
 	UTCToTime,
+	getTimeStr,
 } from "./SRAPI.ts"
 import Card from "./card.tsx"
 import Pagnator from "./Pagnator.tsx"
@@ -117,7 +118,7 @@ function EpisodeList({ params }: { params: GetEpisodesParams }) {
 						<h1>{data.title}</h1>
 						<p>{data.description}</p>
 						<i className="right">
-							{UTCToTime(data.publishdateutc).toLocaleString()}
+							{getTimeStr(UTCToTime(data.publishdateutc))}
 						</i>
 					</Card>
 				)}
