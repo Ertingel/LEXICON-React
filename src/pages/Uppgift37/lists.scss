@@ -8,6 +8,7 @@
 
 	& > ul {
 		grid-area: list;
+		padding: 0;
 
 		display: grid;
 		justify-content: stretch;
