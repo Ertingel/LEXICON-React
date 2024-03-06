@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import { useParams } from "react-router-dom"
+import { Link, useParams } from "react-router-dom"
 import {
 	getChannel,
 	getProgram,
@@ -67,7 +67,12 @@ function ProgramInfo() {
 				<div>
 					<h1>{data.name}</h1>
 					<h2>
-						<b>{data.channel.name}:</b>
+						<b>
+							<Link to={`/Uppgift37/kanal/${data.channel.id}`}>
+								{data.channel.name}
+							</Link>
+							:
+						</b>
 						{data.broadcastinfo}
 					</h2>
 					<p>{data.description}</p>
@@ -98,11 +103,16 @@ function EpisodeInfo() {
 	return (
 		<article className="info">
 			<section className="info-program">
-				<img src={data.imageurl} />
+				<img src={data.imageurltemplate} />
 				<div>
 					<h1>{data.title}</h1>
 					<h2>
-						<b>{data.program.name}:</b>
+						<b>
+							<Link to={`/Uppgift37/program/${data.program.id}`}>
+								{data.program.name}
+							</Link>
+							:
+						</b>
 						{UTCToTime(
 							data.broadcasttime.starttimeutc
 						).toLocaleString()}{" "}

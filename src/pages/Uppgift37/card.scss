@@ -1,12 +1,13 @@
 #Uppgift37 .card > a {
 	width: 100%;
-	padding-bottom: 0.5em;
 
 	color: #fff;
 	background-color: #333;
 	border-radius: 0.5em;
+	outline: none;
 
 	text-decoration: none;
+	user-select: none;
 	overflow: hidden;
 
 	display: flex;
@@ -16,7 +17,6 @@
 
 	transform: scale(1);
 	transition: transform 0.1s ease-in-out;
-	user-select: none;
 
 	&:hover {
 		transform: scale(1.07);
@@ -33,21 +33,26 @@
 		pointer-events: none;
 	}
 
-	& > h1 {
-		font-size: 1.5em;
-		padding: 0.2em calc(0.5em / 1.5);
-	}
-
 	& > div {
-		height: 6em;
-		margin-top: 0.25em;
-		padding-inline: 0.5em;
+		padding: 0.5em;
 		flex-grow: 1;
-		overflow: hidden;
-	}
 
-	& > .time {
-		padding-inline: 0.5em;
-		text-align: right;
+		display: flex;
+		flex-flow: column nowrap;
+		align-items: stretch;
+		justify-content: stretch;
+		gap: 0.5em;
+
+		& > h1 {
+			font-size: 1.5em;
+		}
+
+		& > p {
+			flex-grow: 1;
+		}
+
+		& > .right {
+			text-align: right;
+		}
 	}
 }

@@ -1,6 +1,12 @@
 #Uppgift37 .info {
 	max-width: 64em;
 
+	& a {
+		color: #fff;
+		text-decoration: none;
+		outline: none;
+	}
+
 	& img {
 		width: 100%;
 
@@ -35,6 +41,7 @@
 		& > div {
 			grid-area: info;
 			margin-block: 1em;
+			margin-right: 1em;
 
 			display: flex;
 			flex-flow: column nowrap;
