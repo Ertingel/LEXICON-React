@@ -1,34 +1,54 @@
 #Uppgift37 .info {
 	max-width: 64em;
 
-	& > .info-section {
+	& img {
+		width: 100%;
+
+		display: block;
+		user-select: none;
+		pointer-events: none;
+	}
+
+	& > .info-channel,
+	& > .info-program {
 		color: #fff;
 		background-color: #333;
 		border-radius: 0.5em;
 		overflow: hidden;
+	}
 
+	& > .info-channel {
 		display: grid;
 		gap: 1.5em;
 		justify-content: stretch;
 		align-items: stretch;
 		grid:
-			"image name" auto
-			"image tagline" 1fr
-			/ 1fr 2fr;
+			"image info  info" auto
+			"image info info" 1fr
+			/ 1fr 1fr 1fr;
 
 		& > img {
 			grid-area: image;
-			width: 100%;
 			aspect-ratio: 1 / 1;
 		}
 
-		& > h1 {
-			grid-area: name;
-			margin-top: 1em;
-		}
+		& > div {
+			grid-area: info;
+			margin-block: 1em;
 
-		& > p {
-			grid-area: tagline;
+			display: flex;
+			flex-flow: column nowrap;
+			gap: 0.5em;
+		}
+	}
+
+	& > .info-program {
+		& > div {
+			margin: 1em;
+
+			display: flex;
+			flex-flow: column nowrap;
+			gap: 0.5em;
 		}
 	}
 }

@@ -1,5 +1,6 @@
 #Uppgift37 .card > a {
 	width: 100%;
+	padding-bottom: 0.5em;
 
 	color: #fff;
 	background-color: #333;
@@ -39,9 +40,14 @@
 
 	& > div {
 		height: 6em;
-		margin-block: 0.25em 1em;
+		margin-top: 0.25em;
 		padding-inline: 0.5em;
 		flex-grow: 1;
 		overflow: hidden;
+	}
+
+	& > .time {
+		padding-inline: 0.5em;
+		text-align: right;
 	}
 }

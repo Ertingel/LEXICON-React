@@ -1,6 +1,6 @@
 import { Routes, Route } from "react-router-dom"
 import { ChannelList, ProgramList } from "./lists.tsx"
-import { ChannelInfo, ProgramInfo } from "./info.tsx"
+import { ChannelInfo, ProgramInfo, EpisodeInfo } from "./info.tsx"
 import "./index.scss"
 
 function Uppgift37() {
@@ -12,6 +12,8 @@ function Uppgift37() {
 
 				<Route path="/program/:id" element={<ProgramInfo />} />
 				<Route path="/program" element={<ProgramList />} />
+
+				<Route path="/avsnitt/:id" element={<EpisodeInfo />} />
 
 				<Route path="/*" element={<ChannelList />} />
 			</Routes>

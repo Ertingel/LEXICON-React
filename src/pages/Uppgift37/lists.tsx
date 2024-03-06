@@ -9,6 +9,7 @@ import {
 	Episode,
 	GetEpisodesParams,
 	getEpisodes,
+	UTCToTime,
 } from "./SRAPI.ts"
 import ChannelCard from "./card.tsx"
 import Pagnator from "./Pagnator.tsx"
@@ -75,6 +76,7 @@ function ProgramList(
 						image={data.programimage}
 						title={data.name}
 						link={`/Uppgift37/program/${data.id}`}
+						time={data.broadcastinfo}
 					>
 						<p>{data.description}</p>
 					</ChannelCard>
@@ -112,6 +114,7 @@ function EpisodeList({ params }: { params: GetEpisodesParams }) {
 						image={data.imageurl}
 						title={data.title}
 						link={`/Uppgift37/avsnitt/${data.id}`}
+						time={UTCToTime(data.publishdateutc).toLocaleString()}
 					>
 						<p>{data.description}</p>
 					</ChannelCard>

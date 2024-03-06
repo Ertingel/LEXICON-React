@@ -7,11 +7,13 @@ function BaseChannelCard({
 	title,
 	children,
 	link,
+	time,
 }: {
 	image: string
 	title: string
 	children: ReactNode
 	link: string
+	time?: string
 }) {
 	return (
 		<li className="card">
@@ -19,6 +21,7 @@ function BaseChannelCard({
 				<img src={image} alt="" />
 				<h1>{title}</h1>
 				<div>{children}</div>
+				{time ? <p className="time">{time}</p> : undefined}
 			</Link>
 		</li>
 	)

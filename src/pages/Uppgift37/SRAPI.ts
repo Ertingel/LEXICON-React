@@ -59,6 +59,10 @@ interface Channel {
 	xmltvid: string
 }
 
+function UTCToTime(utc: string) {
+	return new Date(Number(utc.substring(6, utc.length - 2)))
+}
+
 function getChannelURL(id: number) {
 	return `https://api.sr.se/api/v2/channels/${id}?format=JSON`
 }
@@ -164,7 +168,7 @@ async function getProgram(id: number): Promise<Program> {
 
 	const data = fetch(querry)
 		.then(async res => await res.json())
-		.then(res => res.channel)
+		.then(res => res.program)
 
 	MEMO.PROGRAMS.set(querry, data)
 	return await data
@@ -249,7 +253,7 @@ interface Episode {
 }
 
 function getEpisodeURL(id: number) {
-	return `https://api.sr.se/api/v2/episodes/index/${id}?format=JSON`
+	return `https://api.sr.se/api/v2/episodes/get?id=${id}&format=JSON`
 }
 
 function getEpisodesURL(params: GetEpisodesParams) {
@@ -324,4 +328,5 @@ export {
 	getEpisodesURL,
 	getEpisode,
 	getEpisodes,
+	UTCToTime,
 }
