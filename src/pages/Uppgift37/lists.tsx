@@ -1,11 +1,14 @@
 import { useState, useEffect } from "react"
 import {
-	GetChannelsPage,
 	Channel,
 	GetChannelsParams,
-	GetPrograms,
+	getChannelsPage,
 	Program,
 	GetProgramsParams,
+	getPrograms,
+	Episode,
+	GetEpisodesParams,
+	getEpisodes,
 } from "./SRAPI.ts"
 import ChannelCard from "./card.tsx"
 import Pagnator from "./Pagnator.tsx"
@@ -20,7 +23,7 @@ function ChannelList() {
 	const [count, setCount] = useState(0)
 
 	useEffect(() => {
-		GetChannelsPage(PARAMS).then(data => {
+		getChannelsPage(PARAMS).then(data => {
 			setCount(data.totalhits)
 		})
 	}, [setCount])
@@ -30,7 +33,7 @@ function ChannelList() {
 			<h1>{count} Kanaler</h1>
 
 			<Pagnator<Channel, GetChannelsParams>
-				fetchFunction={GetChannelsPage}
+				fetchFunction={getChannelsPage}
 				ComponentBuilder={data => (
 					<ChannelCard
 						image={data.image}
@@ -56,7 +59,7 @@ function ProgramList(
 		const params2 = { ...PARAMS, ...params }
 
 		setParams2(params2)
-		GetPrograms(params2).then(data => {
+		getPrograms(params2).then(data => {
 			setCount(data.totalhits)
 		})
 	}, [setParams2, setCount, params])
@@ -66,7 +69,7 @@ function ProgramList(
 			<h1>{count} Program</h1>
 
 			<Pagnator<Program, GetProgramsParams>
-				fetchFunction={GetPrograms}
+				fetchFunction={getPrograms}
 				ComponentBuilder={data => (
 					<ChannelCard
 						image={data.programimage}
@@ -82,4 +85,41 @@ function ProgramList(
 	)
 }
 
-export { ChannelList, ProgramList }
+function EpisodeList({ params }: { params: GetEpisodesParams }) {
+	const [params2, setParams2] = useState<GetEpisodesParams>({
+		...PARAMS,
+		...params,
+	})
+	const [count, setCount] = useState(0)
+
+	useEffect(() => {
+		const params2: GetEpisodesParams = { ...PARAMS, ...params }
+
+		setParams2(params2)
+		getEpisodes(params2).then(data => {
+			setCount(data.totalhits)
+		})
+	}, [setParams2, setCount, params])
+
+	return (
+		<section className="list">
+			<h1>{count} Avsnitt</h1>
+
+			<Pagnator<Episode, GetEpisodesParams>
+				fetchFunction={getEpisodes}
+				ComponentBuilder={data => (
+					<ChannelCard
+						image={data.imageurl}
+						title={data.title}
+						link={`/Uppgift37/avsnitt/${data.id}`}
+					>
+						<p>{data.description}</p>
+					</ChannelCard>
+				)}
+				params={params2}
+			></Pagnator>
+		</section>
+	)
+}
+
+export { ChannelList, ProgramList, EpisodeList }

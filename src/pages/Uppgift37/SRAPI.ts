@@ -1,17 +1,21 @@
 const MEMO: {
 	CHANNELS_PAGES: Map<string, Promise<PagnatedData<Channel>>>
 	CHANNELS: Map<string, Promise<Channel>>
+
 	PROGRAMS_PAGES: Map<string, Promise<PagnatedData<Program>>>
+	PROGRAMS: Map<string, Promise<Program>>
+
+	EPISODES_PAGES: Map<string, Promise<PagnatedData<Episode>>>
+	EPISODES: Map<string, Promise<Episode>>
 } = {
 	CHANNELS_PAGES: new Map(),
 	CHANNELS: new Map(),
-	PROGRAMS_PAGES: new Map(),
-}
 
-interface GetPagnatedData {
-	page?: number
-	pagination?: boolean
-	size?: number
+	PROGRAMS_PAGES: new Map(),
+	PROGRAMS: new Map(),
+
+	EPISODES_PAGES: new Map(),
+	EPISODES: new Map(),
 }
 
 interface PagnatedData<T> {
@@ -21,7 +25,13 @@ interface PagnatedData<T> {
 	totalpages: number
 }
 
-interface GetChannelsParams extends GetPagnatedData {
+interface GetPagnatedData {
+	page?: number
+	pagination?: boolean
+	size?: number
+}
+
+interface GetGeneralData extends GetPagnatedData {
 	audioquality?: string
 	callback?: string
 	filter?: string
@@ -29,6 +39,10 @@ interface GetChannelsParams extends GetPagnatedData {
 	liveaudiotemplateid?: string
 	ondemandaudiotemplateid?: string
 	sort?: string
+}
+
+interface GetChannelsParams extends GetGeneralData {
+	id?: number
 }
 
 interface Channel {
@@ -45,19 +59,19 @@ interface Channel {
 	xmltvid: string
 }
 
-function GetChannelURL(id: number) {
-	return `https://api.sr.se/api/v2/channels${id ? "/" + id : ""}?format=JSON`
+function getChannelURL(id: number) {
+	return `https://api.sr.se/api/v2/channels/${id}?format=JSON`
 }
 
-function GetChannelsPageURL(params: GetChannelsParams) {
+function getChannelsPageURL(params: GetChannelsParams) {
 	return Object.entries(params).reduce(
 		(acc, [key, value]) => acc + `&${key}=${value}`,
 		"https://api.sr.se/api/v2/channels?format=JSON"
 	)
 }
 
-async function GetChannel(id: number): Promise<Channel> {
-	const querry = GetChannelURL(id)
+async function getChannel(id: number): Promise<Channel> {
+	const querry = getChannelURL(id)
 
 	if (MEMO.CHANNELS.has(querry)) return await MEMO.CHANNELS.get(querry)!
 
@@ -69,10 +83,10 @@ async function GetChannel(id: number): Promise<Channel> {
 	return await data
 }
 
-async function GetChannelsPage(
+async function getChannelsPage(
 	params: GetChannelsParams = {}
 ): Promise<PagnatedData<Channel>> {
-	const querry = GetChannelsPageURL(params)
+	const querry = getChannelsPageURL(params)
 
 	if (MEMO.CHANNELS_PAGES.has(querry))
 		return await MEMO.CHANNELS_PAGES.get(querry)!
@@ -82,7 +96,7 @@ async function GetChannelsPage(
 		.then(res => {
 			res.channels.forEach((channel: Channel) => {
 				const promise = async () => channel
-				MEMO.CHANNELS.set(GetChannelURL(channel.id), promise())
+				MEMO.CHANNELS.set(getChannelURL(channel.id), promise())
 			})
 
 			return {
@@ -97,7 +111,7 @@ async function GetChannelsPage(
 	return await data
 }
 
-interface GetProgramsParams extends GetPagnatedData {
+interface GetProgramsParams extends GetGeneralData {
 	channelid?: number
 	programcategoryid?: number
 	isarchived?: boolean
@@ -132,47 +146,182 @@ interface Program {
 	name: string
 }
 
-function GetProgramsURL(params: GetProgramsParams) {
+function getProgramURL(id: number) {
+	return `https://api.sr.se/api/v2/programs/${id}?format=JSON`
+}
+
+function getProgramsURL(params: GetProgramsParams) {
 	return Object.entries(params).reduce(
 		(acc, [key, value]) => acc + `&${key}=${value}`,
 		"https://api.sr.se/api/v2/programs?format=JSON"
 	)
 }
 
-async function GetPrograms(
+async function getProgram(id: number): Promise<Program> {
+	const querry = getProgramURL(id)
+
+	if (MEMO.PROGRAMS.has(querry)) return await MEMO.PROGRAMS.get(querry)!
+
+	const data = fetch(querry)
+		.then(async res => await res.json())
+		.then(res => res.channel)
+
+	MEMO.PROGRAMS.set(querry, data)
+	return await data
+}
+
+async function getPrograms(
 	params: GetProgramsParams = {}
 ): Promise<PagnatedData<Program>> {
-	const querry = GetProgramsURL(params)
+	const querry = getProgramsURL(params)
 
 	if (MEMO.PROGRAMS_PAGES.has(querry))
 		return await MEMO.PROGRAMS_PAGES.get(querry)!
 
 	const data = fetch(querry)
 		.then(async res => await res.json())
-		.then(res => ({
-			list: res.programs,
-			page: res.pagination.page,
-			totalhits: res.pagination.totalhits,
-			totalpages: res.pagination.totalpages,
-		}))
+		.then(res => {
+			res.programs.forEach((program: Program) => {
+				const promise = async () => program
+				MEMO.PROGRAMS.set(getProgramURL(program.id), promise())
+			})
+
+			return {
+				list: res.programs,
+				page: res.pagination.page,
+				totalhits: res.pagination.totalhits,
+				totalpages: res.pagination.totalpages,
+			}
+		})
 
 	MEMO.PROGRAMS_PAGES.set(querry, data)
 	return await data
 }
 
+interface GetEpisodesParams extends GetGeneralData {
+	programid: number
+	fromdate?: string
+	todate?: string
+}
+
+interface Episode {
+	audiopreference: string
+	audiopresentation: string
+	audiopriority: string
+	broadcasttime: {
+		starttimeutc: "/Date(1709643840000)/"
+		endtimeutc: "/Date(1709646000000)/"
+	}
+	channelid: number
+	description: string
+	downloadpodfile: {
+		availablefromutc: string
+		description: string
+		duration: number
+		filesizeinbytes: number
+		id: number
+		program: { id: number; name: string }
+		publishdateutc: string
+		statkey: string
+		title: string
+		url: string
+	}
+	id: number
+	imageurl: string
+	imageurltemplate: string
+	listenpodfile: {
+		availablefromutc: string
+		description: string
+		duration: number
+		filesizeinbytes: number
+		id: number
+		program: { id: number; name: string }
+		publishdateutc: string
+		statkey: string
+		title: string
+		url: string
+	}
+	photographer: string
+	program: { id: number; name: string }
+	publishdateutc: string
+	title: string
+	url: string
+}
+
+function getEpisodeURL(id: number) {
+	return `https://api.sr.se/api/v2/episodes/index/${id}?format=JSON`
+}
+
+function getEpisodesURL(params: GetEpisodesParams) {
+	return Object.entries(params).reduce(
+		(acc, [key, value]) => acc + `&${key}=${value}`,
+		"https://api.sr.se/api/v2/episodes/index?format=JSON"
+	)
+}
+
+async function getEpisode(id: number): Promise<Episode> {
+	const querry = getEpisodeURL(id)
+
+	if (MEMO.EPISODES.has(querry)) return await MEMO.EPISODES.get(querry)!
+
+	const data = fetch(querry)
+		.then(async res => await res.json())
+		.then(res => res.episode)
+
+	MEMO.EPISODES.set(querry, data)
+	return await data
+}
+
+async function getEpisodes(
+	params: GetEpisodesParams
+): Promise<PagnatedData<Episode>> {
+	const querry = getEpisodesURL(params)
+
+	if (MEMO.EPISODES_PAGES.has(querry))
+		return await MEMO.EPISODES_PAGES.get(querry)!
+
+	const data = fetch(querry)
+		.then(async res => await res.json())
+		.then(res => {
+			res.episodes.forEach((program: Episode) => {
+				const promise = async () => program
+				MEMO.EPISODES.set(getEpisodeURL(program.id), promise())
+			})
+
+			return {
+				list: res.episodes,
+				page: res.pagination.page,
+				totalhits: res.pagination.totalhits,
+				totalpages: res.pagination.totalpages,
+			}
+		})
+
+	MEMO.EPISODES_PAGES.set(querry, data)
+	return await data
+}
+
 export type {
 	GetPagnatedData,
+	GetGeneralData,
 	GetChannelsParams,
 	Channel,
 	PagnatedData,
 	GetProgramsParams,
 	Program,
+	Episode,
+	GetEpisodesParams,
 }
 export {
-	GetChannelURL,
-	GetChannelsPageURL,
-	GetChannelsPage,
-	GetChannel,
-	GetProgramsURL,
-	GetPrograms,
+	getChannelURL,
+	getChannelsPageURL,
+	getChannel,
+	getChannelsPage,
+	getProgramURL,
+	getProgramsURL,
+	getProgram,
+	getPrograms,
+	getEpisodeURL,
+	getEpisodesURL,
+	getEpisode,
+	getEpisodes,
 }
