@@ -290,6 +290,7 @@ interface Episode {
 	photographer: string
 	program: { id: number; name: string }
 	publishdateutc: string
+	text: string
 	title: string
 	url: string
 }

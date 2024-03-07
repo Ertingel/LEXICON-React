@@ -11,6 +11,7 @@ import {
 	getTimeStr,
 } from "./SRAPI"
 import { ProgramList, EpisodeList } from "./lists"
+import Audio from "./Audio.tsx"
 import "./info.scss"
 
 function ChannelInfo() {
@@ -37,6 +38,7 @@ function ChannelInfo() {
 					<h1>{data.name}</h1>
 					<h2>{data.channeltype}</h2>
 					<p>{data.tagline}</p>
+					<Audio src={data.liveaudio.url} />
 				</div>
 			</header>
 
@@ -154,6 +156,9 @@ function EpisodeInfo() {
 						</span>
 					</h2>
 					<p>{data.description}</p>
+					<p>{data.text}</p>
+
+					<Audio src={data.listenpodfile.url} />
 				</div>
 			</header>
 		</article>
