@@ -1,10 +1,88 @@
 #Uppgift37 .audio {
-	& button {
+	padding: 0.5em;
+
+	background-color: #222;
+	border-radius: 5em;
+
+	display: flex;
+	flex-flow: row nowrap;
+	align-items: center;
+	gap: 1em;
+
+	& .material-symbols-rounded {
 		font-size: 3em;
 
 		color: #fff;
 		border: none;
 		background: none;
 		outline: none;
+
+		text-decoration: none;
+	}
+
+	& .progress {
+		flex-grow: 1;
+	}
+
+	& .timestamp {
+		text-wrap: nowrap;
+	}
+
+	& .mute-button {
+		font-size: 2em;
+	}
+
+	& .volume {
+		width: 5em;
+	}
+
+	/*********** Baseline, reset styles ***********/
+	& input[type="range"] {
+		-webkit-appearance: none;
+		appearance: none;
+		background: transparent;
+		cursor: pointer;
+		width: auto;
+	}
+
+	/* Removes default focus */
+	& input[type="range"]:focus {
+		outline: none;
+	}
+
+	/******** Chrome, Safari, Opera and Edge Chromium styles ********/
+	/* slider track */
+	& input[type="range"]::-webkit-slider-runnable-track {
+		background-color: #111;
+		border-radius: 0.5em;
+		height: 1em;
+	}
+
+	/* slider thumb */
+	& input[type="range"]::-webkit-slider-thumb {
+		-webkit-appearance: none; /* Override default look */
+		appearance: none;
+		margin-top: 0px; /* Centers thumb on the track */
+		background-color: #ffffff;
+		border-radius: 0.5em;
+		height: 1em;
+		width: 1em;
+	}
+
+	/*********** Firefox styles ***********/
+	/* slider track */
+	& input[type="range"]::-moz-range-track {
+		background-color: #111;
+		border-radius: 0.5em;
+		height: 1em;
+	}
+
+	/* slider thumb */
+	& input[type="range"]::-moz-range-thumb {
+		background-color: #ffffff;
+		border: none; /*Removes extra border that FF applies*/
+		border-radius: 0.5em;
+		height: 1em;
+		width: 1em;
 	}
 }

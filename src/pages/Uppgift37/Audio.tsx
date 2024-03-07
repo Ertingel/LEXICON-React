@@ -1,34 +1,22 @@
-import { useState, useRef, useEffect } from "react"
+import { useState, useRef } from "react"
 import "./Audio.scss"
 
 function timeToStr(time: number) {
+	if (time === Infinity) return "???"
+
 	return `${Math.floor((time / 60) % 60)}:${String(
 		Math.floor(time % 60)
 	).padStart(2, "0")}`
 }
 
-function Audio({ src }: { src: string }) {
+function Audio({ live, download }: { live: string; download?: string }) {
 	const audioRef = useRef<HTMLAudioElement>(null)
 
-	const [playing, setPlaying] = useState(false)
 	const [length, setLength] = useState(0)
 	const [at, setAt] = useState(0)
 
-	const [mute, setMute] = useState(false)
-	const [volume, setVolume] = useState(1)
-
-	useEffect(() => {
-		if (audioRef.current) {
-			if (playing) audioRef.current.play()
-			else audioRef.current.pause()
-		}
-	}, [audioRef, playing])
-
-	useEffect(() => {
-		if (audioRef.current) {
-			audioRef.current.volume = mute ? 0 : volume
-		}
-	}, [mute, volume])
+	const [muted, setMuted] = useState(false)
+	const [volume, setVolume] = useState(0)
 
 	return (
 		<section className="audio">
@@ -62,10 +50,15 @@ function Audio({ src }: { src: string }) {
 			<button
 				className="mute-button material-symbols-rounded"
 				onClick={() => {
-					setMute(!mute)
+					if (audioRef.current) {
+						audioRef.current.muted = !audioRef.current.muted
+
+						if (!muted && audioRef.current.volume <= 0.001)
+							audioRef.current.volume = 0.5
+					}
 				}}
 			>
-				{mute ? "volume_off" : "volume_up"}
+				{muted || volume <= 0 ? "volume_off" : "volume_up"}
 			</button>
 
 			<input
@@ -74,17 +67,36 @@ function Audio({ src }: { src: string }) {
 				min={0}
 				max={1}
 				step={0.05}
-				value={mute ? 0 : volume}
+				value={muted ? 0 : volume}
 				onChange={e => {
-					setVolume(Number(e.target.value))
+					if (audioRef.current) {
+						audioRef.current.volume = Number(e.target.value)
+
+						if (muted && audioRef.current.volume > 0)
+							audioRef.current.muted = false
+					}
 				}}
 			/>
 
+			{download ? (
+				<a
+					className="download material-symbols-rounded"
+					href={download}
+				>
+					download
+				</a>
+			) : undefined}
+
 			<audio
-				controls
+				//controls
 				ref={audioRef}
 				onLoadedMetadata={() => {
-					if (audioRef.current) setLength(audioRef.current.duration)
+					if (audioRef.current) {
+						setAt(audioRef.current.currentTime)
+						setLength(audioRef.current.duration)
+						setMuted(audioRef.current.muted)
+						setVolume(audioRef.current.volume)
+					}
 				}}
 				onTimeUpdate={() => {
 					if (audioRef.current) {
@@ -92,8 +104,14 @@ function Audio({ src }: { src: string }) {
 						setLength(audioRef.current.duration)
 					}
 				}}
+				onVolumeChange={() => {
+					if (audioRef.current) {
+						setMuted(audioRef.current.muted)
+						setVolume(audioRef.current.volume)
+					}
+				}}
 			>
-				<source src={src} type="audio/mp3" />
+				<source src={live} type="audio/mp3" />
 			</audio>
 		</section>
 	)

@@ -38,7 +38,7 @@ function ChannelInfo() {
 					<h1>{data.name}</h1>
 					<h2>{data.channeltype}</h2>
 					<p>{data.tagline}</p>
-					<Audio src={data.liveaudio.url} />
+					<Audio live={data.liveaudio.url} />
 				</div>
 			</header>
 
@@ -158,7 +158,10 @@ function EpisodeInfo() {
 					<p>{data.description}</p>
 					<p>{data.text}</p>
 
-					<Audio src={data.listenpodfile.url} />
+					<Audio
+						live={data.listenpodfile.url}
+						download={data.downloadpodfile.url}
+					/>
 				</div>
 			</header>
 		</article>
