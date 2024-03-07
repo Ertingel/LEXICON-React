@@ -1,3 +1,5 @@
+import { useState } from "react"
+
 const MEMO: {
 	CHANNELS_PAGES: Map<string, Promise<PagnatedData<Channel>>>
 	CHANNELS: Map<string, Promise<Channel>>
@@ -8,7 +10,7 @@ const MEMO: {
 	EPISODES_PAGES: Map<string, Promise<PagnatedData<Episode>>>
 	EPISODES: Map<string, Promise<Episode>>
 
-	NEXT_ID: number
+	PROGRAM_CATEGORIES?: Promise<ProgramCategory[]>
 } = {
 	CHANNELS_PAGES: new Map(),
 	CHANNELS: new Map(),
@@ -18,8 +20,6 @@ const MEMO: {
 
 	EPISODES_PAGES: new Map(),
 	EPISODES: new Map(),
-
-	NEXT_ID: 0,
 }
 
 function UTCToTime(utc: string) {
@@ -70,7 +70,6 @@ function getTimeStr(time: Date): string {
 
 interface HasID {
 	id: number
-	uid: number
 }
 
 interface PagnatedData<T extends HasID> {
@@ -133,10 +132,7 @@ async function getChannel(id: number): Promise<Channel> {
 
 	const data = fetch(querry)
 		.then(async res => await res.json())
-		.then(res => {
-			res.channel.uid = MEMO.NEXT_ID++
-			return res.channel
-		})
+		.then(res => res.channel)
 
 	MEMO.CHANNELS.set(querry, data)
 	return await data
@@ -157,8 +153,6 @@ async function getChannelsPage(
 				const url = getChannelURL(channel.id)
 				if (MEMO.CHANNELS.has(url)) return
 
-				channel.uid = MEMO.NEXT_ID++
-
 				const promise = async () => channel
 				MEMO.CHANNELS.set(url, promise())
 			})
@@ -178,7 +172,7 @@ async function getChannelsPage(
 interface GetProgramsParams extends GetGeneralData {
 	channelid?: number
 	programcategoryid?: number
-	isarchived?: boolean
+	isarchived?: string
 }
 
 interface Program extends HasID {
@@ -229,10 +223,7 @@ async function getProgram(id: number): Promise<Program> {
 
 	const data = fetch(querry)
 		.then(async res => await res.json())
-		.then(res => {
-			res.program.uid = MEMO.NEXT_ID++
-			return res.program
-		})
+		.then(res => res.program)
 
 	MEMO.PROGRAMS.set(querry, data)
 	return await data
@@ -253,8 +244,6 @@ async function getPrograms(
 				const url = getProgramURL(program.id)
 				if (MEMO.PROGRAMS.has(url)) return
 
-				program.uid = MEMO.NEXT_ID++
-
 				const promise = async () => program
 				MEMO.PROGRAMS.set(url, promise())
 			})
@@ -269,6 +258,31 @@ async function getPrograms(
 
 	MEMO.PROGRAMS_PAGES.set(querry, data)
 	return await data
+}
+
+interface ProgramCategory {
+	id: number
+	name: string
+}
+
+function GetProgramCategories() {
+	const [list, setList] = useState<ProgramCategory[]>([])
+
+	if (MEMO.PROGRAM_CATEGORIES)
+		MEMO.PROGRAM_CATEGORIES.then(data => {
+			setList(data)
+		})
+	else
+		MEMO.PROGRAM_CATEGORIES = fetch(
+			"http://api.sr.se/api/v2/programcategories?format=JSON&pagination=false"
+		)
+			.then(async res => await res.json())
+			.then(data => {
+				setList(data.programcategories)
+				return data.programcategories
+			})
+
+	return list
 }
 
 interface GetEpisodesParams extends GetGeneralData {
@@ -341,10 +355,7 @@ async function getEpisode(id: number): Promise<Episode> {
 
 	const data = fetch(querry)
 		.then(async res => await res.json())
-		.then(res => {
-			res.episode.uid = MEMO.NEXT_ID++
-			return res.episode
-		})
+		.then(res => res.episode)
 
 	MEMO.EPISODES.set(querry, data)
 	return await data
@@ -364,8 +375,6 @@ async function getEpisodes(
 			res.episodes.forEach((episode: Episode) => {
 				const url = getEpisodeURL(episode.id)
 				if (MEMO.EPISODES.has(url)) return
-
-				episode.uid = MEMO.NEXT_ID++
 
 				const promise = async () => episode
 				MEMO.EPISODES.set(url, promise())
@@ -406,6 +415,7 @@ export {
 	getProgramsURL,
 	getProgram,
 	getPrograms,
+	GetProgramCategories,
 	getEpisodeURL,
 	getEpisodesURL,
 	getEpisode,
