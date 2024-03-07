@@ -18,7 +18,7 @@ function ChannelInfo() {
 	const { id } = useParams()
 
 	const [data, setdata] = useState<Channel>()
-	console.log(data)
+
 	useEffect(() => {
 		getChannel(Number(id)).then(data => setdata(data))
 	}, [setdata, id])
@@ -51,7 +51,7 @@ function ProgramInfo() {
 	const { id } = useParams()
 
 	const [data, setdata] = useState<Program>()
-	console.log(data)
+
 	useEffect(() => {
 		getProgram(Number(id)).then(data => setdata(data))
 	}, [setdata, id])
@@ -122,7 +122,7 @@ function EpisodeInfo() {
 	const { id } = useParams()
 
 	const [data, setdata] = useState<Episode>()
-	console.log(data)
+
 	useEffect(() => {
 		getEpisode(Number(id)).then(data => setdata(data))
 	}, [setdata, id])

@@ -1,25 +1,14 @@
 import { useState } from "react"
 
-const MEMO: {
-	CHANNELS_PAGES: Map<string, Promise<PagnatedData<Channel>>>
-	CHANNELS: Map<string, Promise<Channel>>
+const MEMO: Map<string, object> = new Map()
 
-	PROGRAMS_PAGES: Map<string, Promise<PagnatedData<Program>>>
-	PROGRAMS: Map<string, Promise<Program>>
+async function memoizedFetch(url: string) {
+	if (MEMO.has(url)) return MEMO.get(url)
 
-	EPISODES_PAGES: Map<string, Promise<PagnatedData<Episode>>>
-	EPISODES: Map<string, Promise<Episode>>
+	const res = fetch(url).then(async res => await res.json())
+	MEMO.set(url, res)
 
-	PROGRAM_CATEGORIES?: Promise<ProgramCategory[]>
-} = {
-	CHANNELS_PAGES: new Map(),
-	CHANNELS: new Map(),
-
-	PROGRAMS_PAGES: new Map(),
-	PROGRAMS: new Map(),
-
-	EPISODES_PAGES: new Map(),
-	EPISODES: new Map(),
+	return res
 }
 
 function UTCToTime(utc: string) {
@@ -126,47 +115,24 @@ function getChannelsPageURL(params: GetChannelsParams) {
 }
 
 async function getChannel(id: number): Promise<Channel> {
-	const querry = getChannelURL(id)
-
-	if (MEMO.CHANNELS.has(querry)) return await MEMO.CHANNELS.get(querry)!
-
-	const data = fetch(querry)
-		.then(async res => await res.json())
-		.then(res => res.channel)
-
-	MEMO.CHANNELS.set(querry, data)
-	return await data
+	return await memoizedFetch(getChannelURL(id)).then(res => res.channel)
 }
 
 async function getChannelsPage(
 	params: GetChannelsParams = {}
 ): Promise<PagnatedData<Channel>> {
-	const querry = getChannelsPageURL(params)
-
-	if (MEMO.CHANNELS_PAGES.has(querry))
-		return await MEMO.CHANNELS_PAGES.get(querry)!
-
-	const data = fetch(querry)
-		.then(async res => await res.json())
-		.then(res => {
-			res.channels.forEach((channel: Channel) => {
-				const url = getChannelURL(channel.id)
-				if (MEMO.CHANNELS.has(url)) return
-
-				const promise = async () => channel
-				MEMO.CHANNELS.set(url, promise())
-			})
-
-			return {
-				list: res.channels,
-				page: res.pagination.page,
-				totalhits: res.pagination.totalhits,
-				totalpages: res.pagination.totalpages,
-			}
+	return await memoizedFetch(getChannelsPageURL(params)).then(res => {
+		res.channels.forEach((channel: Channel) => {
+			MEMO.set(getChannelURL(channel.id), { channel })
 		})
 
-	MEMO.CHANNELS_PAGES.set(querry, data)
-	return await data
+		return {
+			list: res.channels,
+			page: res.pagination.page,
+			totalhits: res.pagination.totalhits,
+			totalpages: res.pagination.totalpages,
+		}
+	})
 }
 
 interface GetProgramsParams extends GetGeneralData {
@@ -217,47 +183,24 @@ function getProgramsURL(params: GetProgramsParams) {
 }
 
 async function getProgram(id: number): Promise<Program> {
-	const querry = getProgramURL(id)
-
-	if (MEMO.PROGRAMS.has(querry)) return await MEMO.PROGRAMS.get(querry)!
-
-	const data = fetch(querry)
-		.then(async res => await res.json())
-		.then(res => res.program)
-
-	MEMO.PROGRAMS.set(querry, data)
-	return await data
+	return await memoizedFetch(getProgramURL(id)).then(res => res.program)
 }
 
 async function getPrograms(
 	params: GetProgramsParams = {}
 ): Promise<PagnatedData<Program>> {
-	const querry = getProgramsURL(params)
-
-	if (MEMO.PROGRAMS_PAGES.has(querry))
-		return await MEMO.PROGRAMS_PAGES.get(querry)!
-
-	const data = fetch(querry)
-		.then(async res => await res.json())
-		.then(res => {
-			res.programs.forEach((program: Program) => {
-				const url = getProgramURL(program.id)
-				if (MEMO.PROGRAMS.has(url)) return
-
-				const promise = async () => program
-				MEMO.PROGRAMS.set(url, promise())
-			})
-
-			return {
-				list: res.programs,
-				page: res.pagination.page,
-				totalhits: res.pagination.totalhits,
-				totalpages: res.pagination.totalpages,
-			}
+	return await memoizedFetch(getProgramsURL(params)).then(res => {
+		res.programs.forEach((program: Program) => {
+			MEMO.set(getChannelURL(program.id), { program })
 		})
 
-	MEMO.PROGRAMS_PAGES.set(querry, data)
-	return await data
+		return {
+			list: res.programs,
+			page: res.pagination.page,
+			totalhits: res.pagination.totalhits,
+			totalpages: res.pagination.totalpages,
+		}
+	})
 }
 
 interface ProgramCategory {
@@ -268,19 +211,12 @@ interface ProgramCategory {
 function GetProgramCategories() {
 	const [list, setList] = useState<ProgramCategory[]>([])
 
-	if (MEMO.PROGRAM_CATEGORIES)
-		MEMO.PROGRAM_CATEGORIES.then(data => {
-			setList(data)
-		})
-	else
-		MEMO.PROGRAM_CATEGORIES = fetch(
-			"http://api.sr.se/api/v2/programcategories?format=JSON&pagination=false"
-		)
-			.then(async res => await res.json())
-			.then(data => {
-				setList(data.programcategories)
-				return data.programcategories
-			})
+	memoizedFetch(
+		"https://api.sr.se/api/v2/programcategories?format=JSON&pagination=false"
+	).then(data => {
+		setList(data.programcategories)
+		return data.programcategories
+	})
 
 	return list
 }
@@ -349,47 +285,24 @@ function getEpisodesURL(params: GetEpisodesParams) {
 }
 
 async function getEpisode(id: number): Promise<Episode> {
-	const querry = getEpisodeURL(id)
-
-	if (MEMO.EPISODES.has(querry)) return await MEMO.EPISODES.get(querry)!
-
-	const data = fetch(querry)
-		.then(async res => await res.json())
-		.then(res => res.episode)
-
-	MEMO.EPISODES.set(querry, data)
-	return await data
+	return await memoizedFetch(getEpisodeURL(id)).then(res => res.episode)
 }
 
 async function getEpisodes(
 	params: GetEpisodesParams
 ): Promise<PagnatedData<Episode>> {
-	const querry = getEpisodesURL(params)
-
-	if (MEMO.EPISODES_PAGES.has(querry))
-		return await MEMO.EPISODES_PAGES.get(querry)!
-
-	const data = fetch(querry)
-		.then(async res => await res.json())
-		.then(res => {
-			res.episodes.forEach((episode: Episode) => {
-				const url = getEpisodeURL(episode.id)
-				if (MEMO.EPISODES.has(url)) return
-
-				const promise = async () => episode
-				MEMO.EPISODES.set(url, promise())
-			})
-
-			return {
-				list: res.episodes,
-				page: res.pagination.page,
-				totalhits: res.pagination.totalhits,
-				totalpages: res.pagination.totalpages,
-			}
+	return await memoizedFetch(getEpisodesURL(params)).then(res => {
+		res.episodes.forEach((episode: Episode) => {
+			MEMO.set(getChannelURL(episode.id), { episode })
 		})
 
-	MEMO.EPISODES_PAGES.set(querry, data)
-	return await data
+		return {
+			list: res.episodes,
+			page: res.pagination.page,
+			totalhits: res.pagination.totalhits,
+			totalpages: res.pagination.totalpages,
+		}
+	})
 }
 
 export type {
