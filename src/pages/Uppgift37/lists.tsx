@@ -152,6 +152,26 @@ function EpisodeList({ params }: { params: GetEpisodesParams }) {
 			<h1>{count} Avsnitt</h1>
 
 			<div className="filter">
+				<label htmlFor="from">Från:</label>
+				<input
+					type="date"
+					id="from"
+					value={params2.fromdate ?? ""}
+					onChange={e => {
+						setParams2({ ...params2, fromdate: e.target.value })
+					}}
+				/>
+
+				<label htmlFor="to">Till:</label>
+				<input
+					type="date"
+					id="to"
+					value={params2.todate ?? ""}
+					onChange={e => {
+						setParams2({ ...params2, todate: e.target.value })
+					}}
+				/>
+
 				<label htmlFor="audio-quality">Ljud kvalitet:</label>
 				<select
 					id="audio-quality"

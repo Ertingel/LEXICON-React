@@ -2,6 +2,15 @@ import { useState } from "react"
 
 const MEMO: Map<string, object> = new Map()
 
+function getURL(url: string, params: object) {
+	return Object.entries(params)
+		.filter(([, value]) => value || typeof value === "boolean")
+		.reduce(
+			(acc, [key, value]) => acc + `&${key}=${value}`,
+			`${url}?format=JSON`
+		)
+}
+
 async function memoizedFetch(url: string) {
 	if (MEMO.has(url)) return MEMO.get(url)
 
@@ -105,15 +114,6 @@ function getChannelURL(id: number) {
 	return `https://api.sr.se/api/v2/channels/${id}?format=JSON`
 }
 
-function getChannelsPageURL(params: GetChannelsParams) {
-	return Object.entries(params)
-		.filter(([, value]) => value || typeof value === "boolean")
-		.reduce(
-			(acc, [key, value]) => acc + `&${key}=${value}`,
-			"https://api.sr.se/api/v2/channels?format=JSON"
-		)
-}
-
 async function getChannel(id: number): Promise<Channel> {
 	return await memoizedFetch(getChannelURL(id)).then(res => res.channel)
 }
@@ -121,18 +121,20 @@ async function getChannel(id: number): Promise<Channel> {
 async function getChannelsPage(
 	params: GetChannelsParams = {}
 ): Promise<PagnatedData<Channel>> {
-	return await memoizedFetch(getChannelsPageURL(params)).then(res => {
-		res.channels.forEach((channel: Channel) => {
-			MEMO.set(getChannelURL(channel.id), { channel })
-		})
+	const res = await memoizedFetch(
+		getURL("https://api.sr.se/api/v2/channels", params)
+	)
 
-		return {
-			list: res.channels,
-			page: res.pagination.page,
-			totalhits: res.pagination.totalhits,
-			totalpages: res.pagination.totalpages,
-		}
-	})
+	res.channels.forEach((channel: Channel) =>
+		MEMO.set(getChannelURL(channel.id), { channel })
+	)
+
+	return {
+		list: res.channels,
+		page: res.pagination.page,
+		totalhits: res.pagination.totalhits,
+		totalpages: res.pagination.totalpages,
+	}
 }
 
 interface GetProgramsParams extends GetGeneralData {
@@ -173,15 +175,6 @@ function getProgramURL(id: number) {
 	return `https://api.sr.se/api/v2/programs/${id}?format=JSON`
 }
 
-function getProgramsURL(params: GetProgramsParams) {
-	return Object.entries(params)
-		.filter(([, value]) => value || typeof value === "boolean")
-		.reduce(
-			(acc, [key, value]) => acc + `&${key}=${value}`,
-			"https://api.sr.se/api/v2/programs?format=JSON"
-		)
-}
-
 async function getProgram(id: number): Promise<Program> {
 	return await memoizedFetch(getProgramURL(id)).then(res => res.program)
 }
@@ -189,18 +182,20 @@ async function getProgram(id: number): Promise<Program> {
 async function getPrograms(
 	params: GetProgramsParams = {}
 ): Promise<PagnatedData<Program>> {
-	return await memoizedFetch(getProgramsURL(params)).then(res => {
-		res.programs.forEach((program: Program) => {
-			MEMO.set(getChannelURL(program.id), { program })
-		})
+	const res = await memoizedFetch(
+		getURL("https://api.sr.se/api/v2/programs", params)
+	)
 
-		return {
-			list: res.programs,
-			page: res.pagination.page,
-			totalhits: res.pagination.totalhits,
-			totalpages: res.pagination.totalpages,
-		}
-	})
+	res.programs.forEach((program: Program) =>
+		MEMO.set(getChannelURL(program.id), { program })
+	)
+
+	return {
+		list: res.programs,
+		page: res.pagination.page,
+		totalhits: res.pagination.totalhits,
+		totalpages: res.pagination.totalpages,
+	}
 }
 
 interface ProgramCategory {
@@ -275,15 +270,6 @@ function getEpisodeURL(id: number) {
 	return `https://api.sr.se/api/v2/episodes/get?id=${id}&format=JSON`
 }
 
-function getEpisodesURL(params: GetEpisodesParams) {
-	return Object.entries(params)
-		.filter(([, value]) => value || typeof value === "boolean")
-		.reduce(
-			(acc, [key, value]) => acc + `&${key}=${value}`,
-			"https://api.sr.se/api/v2/episodes/index?format=JSON"
-		)
-}
-
 async function getEpisode(id: number): Promise<Episode> {
 	return await memoizedFetch(getEpisodeURL(id)).then(res => res.episode)
 }
@@ -291,18 +277,20 @@ async function getEpisode(id: number): Promise<Episode> {
 async function getEpisodes(
 	params: GetEpisodesParams
 ): Promise<PagnatedData<Episode>> {
-	return await memoizedFetch(getEpisodesURL(params)).then(res => {
-		res.episodes.forEach((episode: Episode) => {
-			MEMO.set(getChannelURL(episode.id), { episode })
-		})
+	const res = await memoizedFetch(
+		getURL("https://api.sr.se/api/v2/episodes/index", params)
+	)
 
-		return {
-			list: res.episodes,
-			page: res.pagination.page,
-			totalhits: res.pagination.totalhits,
-			totalpages: res.pagination.totalpages,
-		}
-	})
+	res.episodes.forEach((episode: Episode) =>
+		MEMO.set(getChannelURL(episode.id), { episode })
+	)
+
+	return {
+		list: res.episodes,
+		page: res.pagination.page,
+		totalhits: res.pagination.totalhits,
+		totalpages: res.pagination.totalpages,
+	}
 }
 
 export type {
@@ -318,19 +306,18 @@ export type {
 	GetEpisodesParams,
 }
 export {
+	getURL,
+	memoizedFetch,
 	UTCToTime,
 	getTimeStr,
 	getChannelURL,
-	getChannelsPageURL,
 	getChannel,
 	getChannelsPage,
 	getProgramURL,
-	getProgramsURL,
 	getProgram,
 	getPrograms,
 	GetProgramCategories,
 	getEpisodeURL,
-	getEpisodesURL,
 	getEpisode,
 	getEpisodes,
 }

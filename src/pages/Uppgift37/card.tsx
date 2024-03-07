@@ -27,6 +27,7 @@ function BaseChannelCard({ data }: { data: Channel }) {
 		<BaseCardFrame image={data.image} link={`/Uppgift37/kanal/${data.id}`}>
 			<h1>{data.name}</h1>
 			<p>{data.tagline}</p>
+			<i className="right">{data.channeltype}</i>
 		</BaseCardFrame>
 	)
 }

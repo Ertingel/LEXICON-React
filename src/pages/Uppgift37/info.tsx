@@ -144,16 +144,18 @@ function EpisodeInfo() {
 						<Link to={`/Uppgift37/program/${data.program.id}`}>
 							{data.program.name}
 						</Link>
-						<span>
-							:{" "}
-							{getTimeStr(
-								UTCToTime(data.broadcasttime.starttimeutc)
-							)}
-							{" - "}
-							{getTimeStr(
-								UTCToTime(data.broadcasttime.endtimeutc)
-							)}
-						</span>
+						{data.broadcasttime ? (
+							<span>
+								:{" "}
+								{getTimeStr(
+									UTCToTime(data.broadcasttime.starttimeutc)
+								)}
+								{" - "}
+								{getTimeStr(
+									UTCToTime(data.broadcasttime.endtimeutc)
+								)}
+							</span>
+						) : undefined}
 					</h2>
 					<p>{data.description}</p>
 					<p>{data.text}</p>
