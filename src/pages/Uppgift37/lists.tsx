@@ -9,10 +9,8 @@ import {
 	Episode,
 	GetEpisodesParams,
 	getEpisodes,
-	UTCToTime,
-	getTimeStr,
 } from "./SRAPI.ts"
-import Card from "./card.tsx"
+import { ChannelCard, ProgramCard, EpisodeCard } from "./card.tsx"
 import Pagnator from "./Pagnator.tsx"
 import "./lists.scss"
 
@@ -36,15 +34,7 @@ function ChannelList() {
 
 			<Pagnator<Channel, GetChannelsParams>
 				fetchFunction={getChannelsPage}
-				ComponentBuilder={data => (
-					<Card
-						image={data.image}
-						link={`/Uppgift37/kanal/${data.id}`}
-					>
-						<h1>{data.name}</h1>
-						<p>{data.tagline}</p>
-					</Card>
-				)}
+				ComponentBuilder={({ data }) => <ChannelCard data={data} />}
 				params={PARAMS}
 			></Pagnator>
 		</section>
@@ -72,16 +62,7 @@ function ProgramList(
 
 			<Pagnator<Program, GetProgramsParams>
 				fetchFunction={getPrograms}
-				ComponentBuilder={data => (
-					<Card
-						image={data.programimage}
-						link={`/Uppgift37/program/${data.id}`}
-					>
-						<h1>{data.name}</h1>
-						<p>{data.description}</p>
-						<i className="right">{data.broadcastinfo}</i>
-					</Card>
-				)}
+				ComponentBuilder={({ data }) => <ProgramCard data={data} />}
 				params={params2}
 			></Pagnator>
 		</section>
@@ -110,18 +91,7 @@ function EpisodeList({ params }: { params: GetEpisodesParams }) {
 
 			<Pagnator<Episode, GetEpisodesParams>
 				fetchFunction={getEpisodes}
-				ComponentBuilder={data => (
-					<Card
-						image={data.imageurl}
-						link={`/Uppgift37/avsnitt/${data.id}`}
-					>
-						<h1>{data.title}</h1>
-						<p>{data.description}</p>
-						<i className="right">
-							{getTimeStr(UTCToTime(data.publishdateutc))}
-						</i>
-					</Card>
-				)}
+				ComponentBuilder={({ data }) => <EpisodeCard data={data} />}
 				params={params2}
 			></Pagnator>
 		</section>

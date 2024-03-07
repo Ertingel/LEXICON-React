@@ -50,7 +50,7 @@ function Pagnator<T, U extends GetPagnatedData>({
 	params,
 }: {
 	fetchFunction: (data: U) => Promise<PagnatedData<T>>
-	ComponentBuilder: (data: T) => JSX.Element
+	ComponentBuilder: ({ data }: { data: T }) => JSX.Element
 	params: U
 }) {
 	const [page, pageDispatch] = useReducer(PageReducer<T>, {
@@ -105,7 +105,7 @@ function Pagnator<T, U extends GetPagnatedData>({
 	return (
 		<ul className="pagnator">
 			{page.list.map((data, index) => (
-				<ComponentBuilder key={index} {...data} />
+				<ComponentBuilder key={index} data={data} />
 			))}
 			{page.page < page.totalpages ? (
 				<li ref={observerTarget} className="loading"></li>
