@@ -2,7 +2,7 @@
 	padding: 0.5em;
 
 	background-color: #222;
-	border-radius: 5em;
+	border-radius: 3em;
 
 	display: flex;
 	flex-flow: row nowrap;
@@ -26,6 +26,7 @@
 
 	& .timestamp {
 		text-wrap: nowrap;
+		white-space: nowrap;
 	}
 
 	& .mute-button {
@@ -34,6 +35,10 @@
 
 	& .volume {
 		width: 5em;
+
+		&:last-child {
+			margin-right: 1em;
+		}
 	}
 
 	/*********** Baseline, reset styles ***********/

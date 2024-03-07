@@ -7,6 +7,8 @@ const MEMO: {
 
 	EPISODES_PAGES: Map<string, Promise<PagnatedData<Episode>>>
 	EPISODES: Map<string, Promise<Episode>>
+
+	NEXT_ID: number
 } = {
 	CHANNELS_PAGES: new Map(),
 	CHANNELS: new Map(),
@@ -16,6 +18,8 @@ const MEMO: {
 
 	EPISODES_PAGES: new Map(),
 	EPISODES: new Map(),
+
+	NEXT_ID: 0,
 }
 
 function UTCToTime(utc: string) {
@@ -64,7 +68,12 @@ function getTimeStr(time: Date): string {
 	}-${time.getDate()} ${clock}`
 }
 
-interface PagnatedData<T> {
+interface HasID {
+	id: number
+	uid: number
+}
+
+interface PagnatedData<T extends HasID> {
 	list: T[]
 	page: number
 	totalhits: number
@@ -91,8 +100,7 @@ interface GetChannelsParams extends GetGeneralData {
 	id?: number
 }
 
-interface Channel {
-	id: number
+interface Channel extends HasID {
 	channeltype: string
 	color: string
 	image: string
@@ -110,10 +118,12 @@ function getChannelURL(id: number) {
 }
 
 function getChannelsPageURL(params: GetChannelsParams) {
-	return Object.entries(params).reduce(
-		(acc, [key, value]) => acc + `&${key}=${value}`,
-		"https://api.sr.se/api/v2/channels?format=JSON"
-	)
+	return Object.entries(params)
+		.filter(([, value]) => value || typeof value === "boolean")
+		.reduce(
+			(acc, [key, value]) => acc + `&${key}=${value}`,
+			"https://api.sr.se/api/v2/channels?format=JSON"
+		)
 }
 
 async function getChannel(id: number): Promise<Channel> {
@@ -123,7 +133,10 @@ async function getChannel(id: number): Promise<Channel> {
 
 	const data = fetch(querry)
 		.then(async res => await res.json())
-		.then(res => res.channel)
+		.then(res => {
+			res.channel.uid = MEMO.NEXT_ID++
+			return res.channel
+		})
 
 	MEMO.CHANNELS.set(querry, data)
 	return await data
@@ -141,8 +154,13 @@ async function getChannelsPage(
 		.then(async res => await res.json())
 		.then(res => {
 			res.channels.forEach((channel: Channel) => {
+				const url = getChannelURL(channel.id)
+				if (MEMO.CHANNELS.has(url)) return
+
+				channel.uid = MEMO.NEXT_ID++
+
 				const promise = async () => channel
-				MEMO.CHANNELS.set(getChannelURL(channel.id), promise())
+				MEMO.CHANNELS.set(url, promise())
 			})
 
 			return {
@@ -163,8 +181,7 @@ interface GetProgramsParams extends GetGeneralData {
 	isarchived?: boolean
 }
 
-interface Program {
-	id: number
+interface Program extends HasID {
 	description: string
 	broadcastinfo: string
 	email: string
@@ -197,10 +214,12 @@ function getProgramURL(id: number) {
 }
 
 function getProgramsURL(params: GetProgramsParams) {
-	return Object.entries(params).reduce(
-		(acc, [key, value]) => acc + `&${key}=${value}`,
-		"https://api.sr.se/api/v2/programs?format=JSON"
-	)
+	return Object.entries(params)
+		.filter(([, value]) => value || typeof value === "boolean")
+		.reduce(
+			(acc, [key, value]) => acc + `&${key}=${value}`,
+			"https://api.sr.se/api/v2/programs?format=JSON"
+		)
 }
 
 async function getProgram(id: number): Promise<Program> {
@@ -210,7 +229,10 @@ async function getProgram(id: number): Promise<Program> {
 
 	const data = fetch(querry)
 		.then(async res => await res.json())
-		.then(res => res.program)
+		.then(res => {
+			res.program.uid = MEMO.NEXT_ID++
+			return res.program
+		})
 
 	MEMO.PROGRAMS.set(querry, data)
 	return await data
@@ -228,8 +250,13 @@ async function getPrograms(
 		.then(async res => await res.json())
 		.then(res => {
 			res.programs.forEach((program: Program) => {
+				const url = getProgramURL(program.id)
+				if (MEMO.PROGRAMS.has(url)) return
+
+				program.uid = MEMO.NEXT_ID++
+
 				const promise = async () => program
-				MEMO.PROGRAMS.set(getProgramURL(program.id), promise())
+				MEMO.PROGRAMS.set(url, promise())
 			})
 
 			return {
@@ -250,7 +277,7 @@ interface GetEpisodesParams extends GetGeneralData {
 	todate?: string
 }
 
-interface Episode {
+interface Episode extends HasID {
 	audiopreference: string
 	audiopresentation: string
 	audiopriority: string
@@ -272,7 +299,6 @@ interface Episode {
 		title: string
 		url: string
 	}
-	id: number
 	imageurl: string
 	imageurltemplate: string
 	listenpodfile: {
@@ -300,10 +326,12 @@ function getEpisodeURL(id: number) {
 }
 
 function getEpisodesURL(params: GetEpisodesParams) {
-	return Object.entries(params).reduce(
-		(acc, [key, value]) => acc + `&${key}=${value}`,
-		"https://api.sr.se/api/v2/episodes/index?format=JSON"
-	)
+	return Object.entries(params)
+		.filter(([, value]) => value || typeof value === "boolean")
+		.reduce(
+			(acc, [key, value]) => acc + `&${key}=${value}`,
+			"https://api.sr.se/api/v2/episodes/index?format=JSON"
+		)
 }
 
 async function getEpisode(id: number): Promise<Episode> {
@@ -313,7 +341,10 @@ async function getEpisode(id: number): Promise<Episode> {
 
 	const data = fetch(querry)
 		.then(async res => await res.json())
-		.then(res => res.episode)
+		.then(res => {
+			res.episode.uid = MEMO.NEXT_ID++
+			return res.episode
+		})
 
 	MEMO.EPISODES.set(querry, data)
 	return await data
@@ -330,9 +361,14 @@ async function getEpisodes(
 	const data = fetch(querry)
 		.then(async res => await res.json())
 		.then(res => {
-			res.episodes.forEach((program: Episode) => {
-				const promise = async () => program
-				MEMO.EPISODES.set(getEpisodeURL(program.id), promise())
+			res.episodes.forEach((episode: Episode) => {
+				const url = getEpisodeURL(episode.id)
+				if (MEMO.EPISODES.has(url)) return
+
+				episode.uid = MEMO.NEXT_ID++
+
+				const promise = async () => episode
+				MEMO.EPISODES.set(url, promise())
 			})
 
 			return {
@@ -348,6 +384,7 @@ async function getEpisodes(
 }
 
 export type {
+	HasID,
 	GetPagnatedData,
 	GetGeneralData,
 	GetChannelsParams,

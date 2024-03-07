@@ -1,7 +1,6 @@
 @import url("https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200");
 
 #Uppgift37 {
-	padding: 1em;
 	min-height: 100vh;
 	box-sizing: border-box;
 
@@ -34,5 +33,32 @@
 	& ol {
 		padding-left: 2em;
 		list-style: disc;
+	}
+
+	& > header {
+		width: 100%;
+		padding: 1em;
+		box-sizing: border-box;
+
+		background-color: #333;
+
+		display: flex;
+		flex-flow: row nowrap;
+		justify-content: center;
+		align-items: center;
+		gap: 1em;
+
+		& > a {
+			font-size: 1.5em;
+
+			color: #fff;
+			text-decoration: none;
+		}
+	}
+
+	& > main {
+		padding: 3em 1em;
+		min-height: 100vh;
+		box-sizing: border-box;
 	}
 }

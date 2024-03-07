@@ -44,7 +44,7 @@ function ChannelList() {
 function ProgramList(
 	{ params }: { params?: GetProgramsParams } = { params: {} }
 ) {
-	const [params2, setParams2] = useState(PARAMS)
+	const [params2, setParams2] = useState<GetProgramsParams>(PARAMS)
 	const [count, setCount] = useState(0)
 
 	useEffect(() => {
@@ -59,6 +59,31 @@ function ProgramList(
 	return (
 		<section className="list">
 			<h1>{count} Program</h1>
+
+			{/*
+			
+			hi (high) - högsta kvalitet, också det som ställer störst krav på uppkopplingen pga sin storlek
+			normal - default
+			lo (low) - lägsta kvalitet, rekommenderat att användas vid dålig uppkoppling
+
+			filter = elementnamn, filtervalue = elementvärde
+
+			sort = värde[ desc][,värde[ desc],...]
+			
+			
+			*/}
+
+			<select
+				id="audio-quality"
+				onChange={e => {
+					setParams2({ ...params2, audioquality: e.target.value })
+				}}
+				value={params2.audioquality}
+			>
+				<option value="hi">Hög</option>
+				<option value="">Normal</option>
+				<option value="lo">Låg</option>
+			</select>
 
 			<Pagnator<Program, GetProgramsParams>
 				fetchFunction={getPrograms}

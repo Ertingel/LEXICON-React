@@ -18,8 +18,37 @@ function Audio({ live, download }: { live: string; download?: string }) {
 	const [muted, setMuted] = useState(false)
 	const [volume, setVolume] = useState(0)
 
+	if (!live) return <></>
+
 	return (
 		<section className="audio">
+			<audio
+				//controls
+				ref={audioRef}
+				onLoadedMetadata={() => {
+					if (audioRef.current) {
+						setAt(audioRef.current.currentTime)
+						setLength(audioRef.current.duration)
+						setMuted(audioRef.current.muted)
+						setVolume(audioRef.current.volume)
+					}
+				}}
+				onTimeUpdate={() => {
+					if (audioRef.current) {
+						setAt(audioRef.current.currentTime)
+						setLength(audioRef.current.duration)
+					}
+				}}
+				onVolumeChange={() => {
+					if (audioRef.current) {
+						setMuted(audioRef.current.muted)
+						setVolume(audioRef.current.volume)
+					}
+				}}
+			>
+				<source src={live} type="audio/mp3" />
+			</audio>
+
 			<button
 				className="play-button material-symbols-rounded"
 				onClick={() => {
@@ -83,36 +112,9 @@ function Audio({ live, download }: { live: string; download?: string }) {
 					className="download material-symbols-rounded"
 					href={download}
 				>
-					download
+					download_for_offline
 				</a>
 			) : undefined}
-
-			<audio
-				//controls
-				ref={audioRef}
-				onLoadedMetadata={() => {
-					if (audioRef.current) {
-						setAt(audioRef.current.currentTime)
-						setLength(audioRef.current.duration)
-						setMuted(audioRef.current.muted)
-						setVolume(audioRef.current.volume)
-					}
-				}}
-				onTimeUpdate={() => {
-					if (audioRef.current) {
-						setAt(audioRef.current.currentTime)
-						setLength(audioRef.current.duration)
-					}
-				}}
-				onVolumeChange={() => {
-					if (audioRef.current) {
-						setMuted(audioRef.current.muted)
-						setVolume(audioRef.current.volume)
-					}
-				}}
-			>
-				<source src={live} type="audio/mp3" />
-			</audio>
 		</section>
 	)
 }

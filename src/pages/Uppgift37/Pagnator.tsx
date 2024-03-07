@@ -1,12 +1,12 @@
 import { useEffect, useReducer, useRef } from "react"
-import { GetPagnatedData, PagnatedData } from "./SRAPI"
+import { HasID, GetPagnatedData, PagnatedData } from "./SRAPI"
 
 enum PageReduceEnum {
 	NEW = "NEW",
 	ADD = "ADD",
 }
 
-interface PageReduceAction<T> {
+interface PageReduceAction<T extends HasID> {
 	type: PageReduceEnum
 	data?: PagnatedData<T>
 }
@@ -17,18 +17,15 @@ interface PageReduceState<T> {
 	totalpages: number
 }
 
-function PageReducer<T>(
+function PageReducer<T extends HasID>(
 	state: PageReduceState<T>,
 	action: PageReduceAction<T>
 ) {
-	if (
-		action.type === PageReduceEnum.NEW &&
-		typeof action.data !== "undefined"
-	)
+	if (action.type === PageReduceEnum.NEW)
 		return {
-			list: action.data.list,
-			page: action.data.page,
-			totalpages: action.data.totalpages,
+			list: [],
+			page: 0,
+			totalpages: 1,
 		}
 
 	if (
@@ -44,7 +41,7 @@ function PageReducer<T>(
 	throw Error("Unknown action: " + action.type)
 }
 
-function Pagnator<T, U extends GetPagnatedData>({
+function Pagnator<T extends HasID, U extends GetPagnatedData>({
 	fetchFunction,
 	ComponentBuilder,
 	params,
@@ -55,8 +52,8 @@ function Pagnator<T, U extends GetPagnatedData>({
 }) {
 	const [page, pageDispatch] = useReducer(PageReducer<T>, {
 		list: [],
-		page: 0,
-		totalpages: 1,
+		page: 1,
+		totalpages: 2,
 	})
 
 	const observerTarget = useRef(null)
@@ -91,21 +88,15 @@ function Pagnator<T, U extends GetPagnatedData>({
 	}, [observerTarget, fetchFunction, page.page, params])
 
 	useEffect(() => {
-		fetchFunction({
-			...params,
-			page: 1,
-		}).then(data => {
-			pageDispatch({
-				type: PageReduceEnum.NEW,
-				data,
-			})
+		pageDispatch({
+			type: PageReduceEnum.NEW,
 		})
-	}, [pageDispatch, fetchFunction, params])
+	}, [params])
 
 	return (
 		<ul className="pagnator">
-			{page.list.map((data, index) => (
-				<ComponentBuilder key={index} data={data} />
+			{page.list.map(data => (
+				<ComponentBuilder key={data.id} data={data} />
 			))}
 			{page.page < page.totalpages ? (
 				<li ref={observerTarget} className="loading"></li>
